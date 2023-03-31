@@ -66,23 +66,29 @@ function App() {
 
 	const changeFocus = (e, action) => {
 		let len = searchList.length
-		let isHighlight =
+		let isFocusable =
 			len > 0 &&
 			searchList[0] !== '검색어를 입력해주세요.' &&
 			searchList[0] !== '검색 결과가 없습니다.'
 
 		if (e.key === 'ArrowDown') {
-			isHighlight && setFocusIdx(prev => (prev + 1) % len)
+			isFocusable && setFocusIdx(prev => (prev + 1) % len)
+
+			// 최근 검색어에서의 focus 로직
+			if (!searchText) setFocusIdx(prev => (prev + 1) % recentList.length)
 		}
 		if (e.key === 'ArrowUp') {
-			isHighlight && setFocusIdx(prev => (prev - 1) % len)
+			isFocusable && setFocusIdx(prev => (prev - 1) % len)
+
+			// 최근 검색어에서의 focus 로직
+			if (!searchText) setFocusIdx(prev => (prev - 1) % recentList.length)
 		}
 
 		if (e.key === 'Escape' || e.key === 'Backspace') {
 			setFocusIdx(-1)
 		}
 		if (e.key === 'Enter') {
-			isHighlight && focusIdx >= 0 && setSearchText(searchList[focusIdx])
+			isFocusable && focusIdx >= 0 && setSearchText(searchList[focusIdx])
 
 			const addList = [searchList[focusIdx] || searchText, ...recentList]
 			const filterList = addList.filter((el, i) => addList.indexOf(el) === i) // 중복되어 있는 word 미리 지우는 작업
@@ -96,12 +102,16 @@ function App() {
 			} else {
 				setRecentList([...filterList])
 			}
-		}
 
-		if (action) {
-			const newList = [action, ...recentList]
-			setRecentList(newList.filter((el, i) => newList.indexOf(el) === i))
+			if (!searchText) onClickSearch(recentList[focusIdx])
+
+			setSearchText('') // 보기 편하게
 		}
+	}
+
+	const onClickSearch = word => {
+		const newList = [word, ...recentList]
+		setRecentList(newList.filter((el, i) => newList.indexOf(el) === i))
 	}
 
 	useEffect(() => {
@@ -113,6 +123,13 @@ function App() {
 			localStorage.setItem('recent', JSON.stringify([...new Set(recentList)]))
 		}
 	}, [recentList])
+
+	useEffect(() => {
+		// searchText를 이어서 입력하면 focus되어 있는 것이 해제되도록
+		setFocusIdx(-1)
+	}, [searchText])
+
+	console.log(recentList)
 
 	return (
 		<>
@@ -133,6 +150,10 @@ function App() {
 							searchList.map((text, i) => (
 								<S.ResultBox
 									key={i}
+									onClick={() => {
+										onClickSearch(text)
+										setSearchText('') // 보기 편하도록
+									}}
 									style={{
 										display: text === '검색어를 입력해주세요.' && 'none',
 										backgroundColor: focusIdx === i && 'rgb(220, 220, 220)',
@@ -153,7 +174,16 @@ function App() {
 							recentView &&
 							!searchText &&
 							recentList.map((word, i) => (
-								<S.ResultBox key={i} onClick={() => changeFocus('', word)}>
+								<S.ResultBox
+									key={i}
+									style={{
+										backgroundColor: focusIdx === i && 'rgb(220, 220, 220)',
+									}}
+									onClick={() => {
+										onClickSearch(word)
+										setFocusIdx(-1)
+									}}
+								>
 									{word}
 								</S.ResultBox>
 							))}

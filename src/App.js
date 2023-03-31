@@ -22,10 +22,6 @@ function App() {
 		JSON.parse(localStorage.getItem('recent')),
 	)
 
-	useEffect(() => {
-		if (recentList !== null || !searchText) setRecentView(true)
-	}, [searchText])
-
 	const getSearchList = async key => {
 		try {
 			const { data } = await axios.get(
@@ -71,6 +67,8 @@ function App() {
 			searchList[0] !== '검색어를 입력해주세요.' &&
 			searchList[0] !== '검색 결과가 없습니다.'
 
+		console.log('isFocusable --> ', isFocusable)
+
 		if (e.key === 'ArrowDown') {
 			isFocusable && setFocusIdx(prev => (prev + 1) % len)
 
@@ -89,26 +87,32 @@ function App() {
 		}
 		if (e.key === 'Enter') {
 			isFocusable && focusIdx >= 0 && setSearchText(searchList[focusIdx])
+			let addList
 
-			const addList = [
-				searchList[focusIdx] || searchText,
-				recentList !== null && recentList,
-			]
+			if (recentList !== null)
+				addList = [searchList[focusIdx] || searchText, ...recentList]
+			else addList = [searchList[focusIdx] || searchText]
+
 			const filterList = addList.filter((el, i) => addList.indexOf(el) === i) // 중복되어 있는 word 미리 지우는 작업
 
 			if (recentList === null) {
 				setRecentList([...addList])
-				return
-			}
-			if (recentList.length >= 5) {
-				setRecentList([...filterList.slice(0, -1)])
 			} else {
-				setRecentList([...filterList])
+				if (recentList.length >= 5) {
+					setRecentList([...filterList.slice(0, -1)])
+				} else {
+					setRecentList([...filterList])
+				}
 			}
 
 			if (!searchText) onClickSearch(recentList[focusIdx])
 
 			setSearchText('') // 보기 편하게
+
+			// 초기화
+			setFocusText('')
+			setFocusIdx(-1)
+			setSearchList([])
 		}
 	}
 
@@ -118,7 +122,8 @@ function App() {
 	}
 
 	useEffect(() => {
-		setFocusText(focusIdx >= 0 && searchList[focusIdx])
+		if (!searchText) setFocusText(focusIdx >= 0 && recentList[focusIdx])
+		else setFocusText(focusIdx >= 0 && searchList[focusIdx])
 	}, [focusIdx])
 
 	useEffect(() => {
@@ -128,11 +133,11 @@ function App() {
 	}, [recentList])
 
 	useEffect(() => {
+		if (recentList !== null || !searchText) setRecentView(true)
+
 		// searchText를 이어서 입력하면 focus되어 있는 것이 해제되도록
 		setFocusIdx(-1)
 	}, [searchText])
-
-	console.log(recentList)
 
 	return (
 		<>

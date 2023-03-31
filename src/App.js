@@ -90,7 +90,10 @@ function App() {
 		if (e.key === 'Enter') {
 			isFocusable && focusIdx >= 0 && setSearchText(searchList[focusIdx])
 
-			const addList = [searchList[focusIdx] || searchText, ...recentList]
+			const addList = [
+				searchList[focusIdx] || searchText,
+				recentList !== null && recentList,
+			]
 			const filterList = addList.filter((el, i) => addList.indexOf(el) === i) // 중복되어 있는 word 미리 지우는 작업
 
 			if (recentList === null) {

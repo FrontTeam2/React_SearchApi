@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import List from './searchList'
-import useDeBounce from '../Uses/useDebounce'
+import useDeBounce from '../CustomHooks/useDebounce'
 import RecentList from './recentList'
 
 function SearchMain() {
@@ -25,7 +25,7 @@ function SearchMain() {
 			setList([err.response.data])
 		}
 	}
-
+	console.log(recent)
 	// input값 state관리
 	const searchInput = e => {
 		setInput(e.target.value)
@@ -37,13 +37,8 @@ function SearchMain() {
 	}, [debounceVal])
 
 	//추가버튼
-	/*
-		추가버튼을 누를시
-		1. localStorage에 값이 없다 그러면 로컬 스토리지에 빈배열 집어놓고
-		2. 그리고 localStorage에 빈배열 집어 넣어라
-		3. arr즉 변수 만들고 'recent'
-	*/
 	const onSearchBtn = () => {
+		if (!input) return
 		if (!localStorage.getItem('recent')) {
 			localStorage.setItem('recent', JSON.stringify([]))
 		}
@@ -68,21 +63,35 @@ function SearchMain() {
 
 	//최근검색 초기화버튼
 	const [focusInx, setFocusInx] = useState(-1)
+	const [focusRecentInx, setFocusRecentInx] = useState(-1)
+
 	const onResetBtn = () => {
 		localStorage.clear()
 		setRecent([])
 	}
 
+	//키보드 이벤트
 	const onkeyDown = e => {
-		// -1에서 시작해서 인덱스 0~4까지 가는 형식으로 가야한다.
-		//
-		let recLength = recent.length
-		console.log(recLength)
+		//검색list
 		if (e.key === 'ArrowDown') {
-			setFocusInx(prev => (prev + 1) % recLength)
+			setFocusInx(prev => (prev + 1) % list.length)
+			if (!input) {
+				{
+					setFocusRecentInx(prev => (prev + 1) % recent.length)
+				}
+			}
 		}
-
-		console.log(focusInx)
+		if (e.key === 'ArrowUp') {
+			focusInx === -1
+				? setFocusInx(list.length - 1)
+				: setFocusInx(prev => prev - 1)
+		}
+		if (!input) {
+			focusRecentInx === -1
+				? setFocusRecentInx(list.length - 1)
+				: setFocusRecentInx(prev => prev - 1)
+		}
+		console.log(list[focusInx + 1])
 	}
 	return (
 		<S.Div>
@@ -92,13 +101,14 @@ function SearchMain() {
 				<Button onClick={onResetBtn}>reset</Button>
 			</S.Search>
 			{debounceVal.length === 0 && recent ? (
-				<RecentList recent={recent} />
+				<RecentList recent={recent} focusRecentInx={focusRecentInx} />
 			) : (
-				<List list={list} />
+				<List list={list} focusInx={focusInx} />
 			)}
 		</S.Div>
 	)
 }
+
 export default SearchMain
 
 const Div = styled.div`

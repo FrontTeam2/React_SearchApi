@@ -1,21 +1,21 @@
-import { useState } from 'react'
 import styled from 'styled-components'
 
-function List({ list }) {
-	const [focusIdx, setFocusIdx] = useState(-1)
-
-	// if (e.key === 'ArrowDown') {
-	// 	recLength > 0 && recLength < maxList
-	// 		? setFocusIdx(prev => (prev + 1) % recLength)
-	// 		: setFocusIdx(prev => (prev + 1) % maxList)
-	// }
-
+function List({ list, focusInx }) {
 	return (
 		<>
 			<H2>추천검색어</H2>
 			<S.Ul>
 				{list.map((e, idx) => {
-					return <S.Li focus={focusIdx === idx}>{e}</S.Li>
+					return (
+						<S.Li
+							style={{
+								backgroundColor:
+									idx == focusInx ? 'rgb(220, 220, 220)' : 'white',
+							}}
+						>
+							{e}
+						</S.Li>
+					)
 				})}
 			</S.Ul>
 		</>
@@ -34,6 +34,9 @@ const Li = styled.div`
 	text-align: center;
 	padding: 5px 0;
 	cursor: pointer;
+	:focus {
+		background-color: yellow;
+	}
 	&:hover {
 		background-color: #f0f0f0;
 	}

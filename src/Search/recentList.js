@@ -1,14 +1,18 @@
 import styled from 'styled-components'
 
-function RecentList({ recent }) {
-	console.log(recent)
+function RecentList({ recent, focusRecentInx }) {
 	return (
 		<>
 			<S.Ul>
 				<H2>최근검색어</H2>
 				{recent.map((e, idx) => {
 					return (
-						<S.Li>
+						<S.Li
+							style={{
+								backgroundColor:
+									idx == focusRecentInx ? 'rgb(220, 220, 220)' : 'white',
+							}}
+						>
 							{idx + 1}번: {e}
 						</S.Li>
 					)

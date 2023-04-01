@@ -42,44 +42,38 @@
     * 설정한 특정 시간 주기로 계 실행되는 쓰로틀링 방식보다는 <br>이벤트가 연속적으로 발생하더라도 설정한 특정 시간 동안은 이벤트가 발생하지 않고, 맨 마지막 이벤트에서 발생시키는 디바운싱 방식을 검색 기능에 적용하는 것이 맞다고 판단했습니다.
     
 * 적용한 방식 설명
-  ```
-  // 디바운싱된 검색하기 기능 함수
-	const debouncedSearch = value => {
-		setDelaySearchState(value)
-	}
+```
+  📜 Hooks/useDebounce.js
+  
+  const useDebounce = (value, delay) => {
+	const [debounceValue, setDebounceValue] = useState(value)
 
-	// 디바운싱텀(0.3sec)마다 api 요청을 보내도록
 	useEffect(() => {
 		const handler = setTimeout(() => {
-			getSearchList(delaySearchState)
-		}, 300)
+			setDebounceValue(value)
+		}, delay)
+		return () => clearTimeout(handler)
+	}, [value, delay])
 
-		console.log(delaySearchState)
+	return debounceValue
+	
+  ------------------------------------------------------------------
 
-		return () => {
-			clearTimeout(handler)
-		}
-	}, [delaySearchState])
-
-	// 검색어 변경 핸들러
-	const handleSearchTermChange = e => {
-		const key = e.target.value
-		setSearchText(key)
-		debouncedSearch(key)
-	}
+  📜 App.js
   
-  // ...
-  <input onChange={ handleSearchTermChange } />
-  ```
+  const debounceSearchTerm = useDebounce(searchText, 300)
   
-**1**. input을 통해 onChange={ handleSearchTemChange }가 실행된다. <br>
-    ➡️ input창에 보이는 searchText가 실시간으로 변경 <br>
-    ➡️ debouncedSearch(입력한 값)을 실시간으로 호출 <br>
-    <br>
-**2**. debouncedSearch(입력한 값)으로 delatedSearchState가 변경되고 <br>
-    ➡️ 변경되면 API 요청을 보낸다.<br>
-    <br>
-**3**. delayedSearchState가가 변경되었으니 해당 state를 걸어둔 useEffect가 실행된다.<br>
+  useEffect(() => {
+	getSearchList(debounceSearchTerm) // getSearchList는 API 요청 보내는 함수
+  }, [debounceSearchTerm])
+
+  
+```
+  
+**1)** 검색을 하게 되면 화면이 렌더링되면서 searchText가 커스텀 훅에게 전달된다. <br>
+
+**2)** 1에 의해 의존성 배열에 debounceSearchTerm이 담겨있는 useEffect가 실행 <br>
+    ➡️ API 요청을 보낸다.<br>
     ➡️ 그런데 그 요청은 0.3초 이후에 보내도록<br>
     ➡️ ※ 그런데 이 delayedSearchState가 계속 계속 바뀌게 되면 timer가 생기고 api 요청이 이루어지기도 전에 지워지고를 바로 하다보니<br>
         ==> 결론적으로는 입력이 멈춘 후 0.3초 동안 기다린 후에 API 요청을 보낸다<br>

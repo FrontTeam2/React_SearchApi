@@ -1,5 +1,13 @@
+import SearchMain from './Search/searchMain'
+
 function App() {
-  return <div>:)</div>;
+	return (
+		<>
+			<div>
+				<SearchMain />
+			</div>
+		</>
+	)
 }
 
-export default App;
+export default App

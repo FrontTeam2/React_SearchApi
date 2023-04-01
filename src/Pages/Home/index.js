@@ -81,7 +81,7 @@ function HomePage() {
 				} else {
 					setChooseInput(prev => prev + 1)
 				}
-			} else {
+			} else if (recentSearchArray !== null && recentSearchArray.length) {
 				// 검색창이 빈 경우
 				if (chooseInput > recentSearchArray.length - 2) {
 					setChooseInput(0)
@@ -90,6 +90,12 @@ function HomePage() {
 				}
 			}
 		}
+
+		// 다른 (한글 혹은 영어)키 입력
+		if (e.key === 'Process') {
+			setChooseInput(-1)
+		}
+
 		setShowSearchList(true)
 	}
 

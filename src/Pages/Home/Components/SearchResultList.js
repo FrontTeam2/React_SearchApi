@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 function SearchResultList({ searchResultList }) {
 
-	if (searchResultList == '검색 결과가 없습니다.') {
+	if (searchResultList == '검색 결과가 없습니다.' || !searchResultList.length) {
 		return
 	}
 

@@ -1,70 +1,52 @@
-# Getting Started with Create React App
+# 🚀 프로젝트 설명
+* 본 프로젝트는 **API 콜 최적화**를 적용한 **검색어 조회 웹 사이트** 입니다.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<br>
 
-## Available Scripts
+# 💻 실제 구현 화면
+* 메인 화면
+<img src="https://user-images.githubusercontent.com/61799492/229288180-4a126af8-c054-4526-b70c-58f57e1f9381.png" />
 
-In the project directory, you can run:
+<hr>
 
-### `npm start`
+* 검색 시 화면
+<img src="https://user-images.githubusercontent.com/61799492/229288369-7bcdd27e-64a7-42bd-94c6-070af9576164.png" />
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<hr>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+* 검색 후 화면
+<img src="https://user-images.githubusercontent.com/61799492/229288424-02ed0321-2565-4330-b810-71d4f9855044.png" />
 
-### `npm test`
+<br>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# ⚒️ 주요 기능 구현
+* **API 콜 최적화**
+  * 검색 서비스는 사용자가 입력할 때마다 API 콜을 요청하기 때문에 비효율적일 수 있어, 이를 최적화
+  * 단, axios만 사용 가능(axios의 cache 옵션 X, react-query와 같은 캐싱 라이브러리 사용 X)
+  * react, react-router-dom, styled-componet와 같은 기본적인 라이브러리만 사용 가능
+  
+* **최근 검색어 기능**
+  * 최근 검색어 최대 5개
+  * 5개 안에 중복된 검색어 있을 경우, 새로 추가 X ➡️ 기존에 있던 검색어가 가장 첫 번째로 이동
+  * 5개가 넘었을 때 새로운 검색어가 추가되면, 가장 마지막 검색어 삭제
+  * 해당 데이터는 웹 페이지 종료 후에도 유지되도록
+  
+* **키보드 만으로 추천 검색어 및 일반 검색 기능**
+  * 키보드 만으로 상하 이동, ENTER로 검색
+  * 마우스 클릭으로도 검색어로 검색 가능
+  * 검색 시 별다른 페이지 이동 없이 최근 검색어가 추가되는 형태
+  
+* **검색 단어 하이라이트**
+  * 검색어가 포함된 부분을 하이라이트
+  * 검색 결과가 없을 시 "검색결과가 없습니다"라는 백엔드에서 전송한 메시지 출력
 
-### `npm run build`
+<br>
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# ✨ API 콜 최적화 방법 - Debouncing
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* 추후 내용 추가
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# 🔐 CORS 에러 정의
+#### CORS(Cross Origin Resource Sharing)
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* 추후 내용 추가

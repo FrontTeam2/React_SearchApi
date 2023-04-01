@@ -1,4 +1,4 @@
-import SearchMain from './Search/searchMain'
+import SearchMain from '../Search/searchMain'
 
 function App() {
 	return (

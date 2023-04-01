@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import List from './searchList'
-import useDeBounce from '../Use/useDebounce'
+import useDeBounce from '../src/Use/useDebounce'
 import RecentList from './recentList'
 
 function SearchMain() {

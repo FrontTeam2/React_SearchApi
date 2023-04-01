@@ -96,9 +96,13 @@ function SearchMain() {
 	return (
 		<S.Div>
 			<S.Search>
-				<S.Input onChange={searchInput} onKeyDown={onkeyDown} />
-				<Button onClick={onSearchBtn}>검색</Button>
-				<Button onClick={onResetBtn}>reset</Button>
+				<S.Input
+					onChange={searchInput}
+					onKeyDown={onkeyDown}
+					value={list[focusInx]}
+				/>
+				<Button1 onClick={onSearchBtn}>검색</Button1>
+				<Button2 onClick={onResetBtn}>초기화</Button2>
 			</S.Search>
 			{debounceVal.length === 0 && recent ? (
 				<RecentList recent={recent} focusRecentInx={focusRecentInx} />
@@ -115,14 +119,21 @@ const Div = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin-top: 100px;
+	padding-top: 100px;
+	background-color: #fdf5e6;
+	height: 1200px;
 `
 const Input = styled.input`
-	padding: 8px 84px;
+	padding: 8px 110px;
 	font-size: 18px;
 	text-align: center;
 	border: none;
 	font-weight: bold;
+	border-radius: 20px;
+	position: relative;
+	:focus {
+		outline: none;
+	}
 `
 const Not = styled.div`
 	padding: 8px 138px;
@@ -136,6 +147,8 @@ const Search = styled.button`
 	display: flex;
 	margin: 0;
 	padding: 0;
+	background-color: #fdf5e6;
+	border: none;
 `
 const S = {
 	Div,
@@ -143,8 +156,30 @@ const S = {
 	Not,
 	Search,
 }
-const Button = styled.button`
-	padding: 10px 5px;
+const Button1 = styled.button`
+	padding: 11px 10px;
 	font-size: 18;
 	border: none;
+	/* background-color: #fdf5e6; */
+	cursor: pointer;
+	position: absolute;
+	right: 680px;
+	:hover {
+		background-color: #deb887;
+	}
+	background-color: #ffdead;
+`
+const Button2 = styled.button`
+	padding: 11px 5px;
+	font-size: 18;
+	border: none;
+	border-radius: 0px 20px 20px 0;
+	background-color: #fdf5e6;
+	cursor: pointer;
+	position: absolute;
+	right: 640px;
+	:hover {
+		background-color: #deb887;
+	}
+	background-color: #ffdead;
 `

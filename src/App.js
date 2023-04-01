@@ -3,15 +3,13 @@ import { useEffect, useState } from 'react'
 import { GlobalStyle } from './Styles/global'
 import S from './Styles/styles'
 import { AiOutlineEnter } from 'react-icons/ai'
-import { BsArrowDownUp } from 'react-icons/bs'
 
-import ColoredItem from './Utils/ColoredItem'
+import ColoredItem from './Components/ColoredItem'
 import SearchApi from './Apis/searchApi'
 import useDebounce from './Hooks/useDebounce'
+import Bottom from './Components/Bottom'
 
 function App() {
-	const [delaySearchState, setDelaySearchState] = useState('')
-
 	const [searchText, setSearchText] = useState('')
 	const [searchList, setSearchList] = useState([])
 
@@ -37,27 +35,22 @@ function App() {
 	}
 
 	const changeFocus = e => {
-		let len = searchList.length
-		let isFocusable =
-			len > 0 &&
+		const search_len = searchList.length
+		const recent_len = recentList.length
+
+		const isFocusable =
+			search_len > 0 &&
 			searchList[0] !== '검색어를 입력해주세요.' &&
 			searchList[0] !== '검색 결과가 없습니다.'
 
-		console.log('isFocusable --> ', isFocusable)
-
 		if (e.key === 'ArrowDown') {
-			isFocusable && setFocusIdx(prev => (prev + 1) % len)
-
-			// 최근 검색어에서의 focus 로직
-			if (!searchText) setFocusIdx(prev => (prev + 1) % recentList.length)
+			isFocusable && setFocusIdx(prev => (prev + 1) % search_len)
+			if (!searchText) setFocusIdx(prev => (prev + 1) % recent_len) // 최근 검색어에서의 focus 로직
 		}
 		if (e.key === 'ArrowUp') {
-			isFocusable && setFocusIdx(prev => (prev - 1) % len)
-
-			// 최근 검색어에서의 focus 로직
-			if (!searchText) setFocusIdx(prev => (prev - 1) % recentList.length)
+			isFocusable && setFocusIdx(prev => (prev - 1) % search_len)
+			if (!searchText) setFocusIdx(prev => (prev - 1) % recent_len) // 최근 검색어에서의 focus 로직
 		}
-
 		if (e.key === 'Escape' || e.key === 'Backspace') {
 			setFocusIdx(-1)
 		}
@@ -175,24 +168,7 @@ function App() {
 								</S.ResultBox>
 							))}
 					</S.ResultContainer>
-					<S.BottomBox>
-						<div>
-							<ul>
-								<li>
-									<span>
-										<BsArrowDownUp />
-									</span>
-									<span>선택</span>
-								</li>
-								<li>
-									<span>
-										<AiOutlineEnter />
-									</span>
-									<span>검색</span>
-								</li>
-							</ul>
-						</div>
-					</S.BottomBox>
+					<Bottom />
 				</S.Container>
 			</S.Wrapper>
 		</>

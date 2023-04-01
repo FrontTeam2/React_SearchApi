@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 
 import { GlobalStyle } from './Styles/global'
 import S from './Styles/styles'
@@ -7,6 +6,8 @@ import { AiOutlineEnter } from 'react-icons/ai'
 import { BsArrowDownUp } from 'react-icons/bs'
 
 import ColoredItem from './Utils/ColoredItem'
+import SearchApi from './Apis/searchApi'
+import useDebounce from './Hooks/useDebounce'
 
 function App() {
 	const [delaySearchState, setDelaySearchState] = useState('')
@@ -17,16 +18,16 @@ function App() {
 	const [focusIdx, setFocusIdx] = useState(-1)
 	const [focusText, setFocusText] = useState('')
 
-	const [recentView, setRecentView] = useState(false)
+	const [recentView, setRecentView] = useState(true)
 	const [recentList, setRecentList] = useState(
 		JSON.parse(localStorage.getItem('recent')),
 	)
 
+	const debounceSearchTerm = useDebounce(searchText, 300)
+
 	const getSearchList = async key => {
 		try {
-			const { data } = await axios.get(
-				`http://localhost:3000/search?key=${encodeURIComponent(key)}`,
-			)
+			const { data } = await SearchApi.getSearchValue(key)
 			setSearchList(data.slice(0, 10))
 		} catch (err) {
 			setSearchList([err.response.data])
@@ -35,32 +36,7 @@ function App() {
 		}
 	}
 
-	// 디바운싱된 검색하기 기능 함수
-	const debouncedSearch = value => {
-		setDelaySearchState(value)
-	}
-
-	// 디바운싱텀(0.3sec)마다 api 요청을 보내도록
-	useEffect(() => {
-		const handler = setTimeout(() => {
-			getSearchList(delaySearchState)
-		}, 300)
-
-		console.log(delaySearchState)
-
-		return () => {
-			clearTimeout(handler)
-		}
-	}, [delaySearchState])
-
-	// 검색어 변경 핸들러
-	const handleSearchTermChange = e => {
-		const key = e.target.value
-		setSearchText(key)
-		debouncedSearch(key)
-	}
-
-	const changeFocus = (e, action) => {
+	const changeFocus = e => {
 		let len = searchList.length
 		let isFocusable =
 			len > 0 &&
@@ -132,12 +108,15 @@ function App() {
 		}
 	}, [recentList])
 
-	useEffect(() => {
+	const handleSearchTermChange = e => {
 		if (recentList !== null || !searchText) setRecentView(true)
-
-		// searchText를 이어서 입력하면 focus되어 있는 것이 해제되도록
 		setFocusIdx(-1)
-	}, [searchText])
+		setSearchText(e.target.value)
+	}
+
+	useEffect(() => {
+		getSearchList(debounceSearchTerm)
+	}, [debounceSearchTerm])
 
 	return (
 		<>
@@ -147,8 +126,8 @@ function App() {
 					<div>
 						<input
 							value={focusText || searchText}
-							onKeyDown={changeFocus}
 							onChange={handleSearchTermChange}
+							onKeyDown={changeFocus}
 							placeholder="검색어를 입력해주세요 :D"
 						/>
 					</div>

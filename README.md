@@ -90,6 +90,12 @@
      
     ==> 특히, 사용감에도 큰 불편이 없었다.
     
+![search_1](https://user-images.githubusercontent.com/112946860/229265996-6eafbdc2-96f5-4fdd-9028-b439746c58d6.gif)
+
+* 특정 구간에 검색어를 입력할 경우 API 요청을 보내지 않고, 마지막 이벤트에서만 API 요청을 보내고 있습니다.
+* 이벤트가 발생할 때마다 요청을 보내는 것이 아닌, 특정 구간에서만 API 요청을 보냅니다.   
+
+    
 # 🔐 CORS 에러 정의
 #### CORS(Cross Origin Resource Sharing)
     CORS는 다른 도메인을 가진 리소스에 엑세스할 수 있게 하는 보안 메커니즘

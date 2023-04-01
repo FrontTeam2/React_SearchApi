@@ -183,7 +183,7 @@ const Wrapper = styled.div`
 
 const InputArea = styled.input`
 	width: 100%;
-	border: 1px solid black;
+	border: 1px solid gray;
 	border-radius: 1rem;
 	padding: 1rem;
 `

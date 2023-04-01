@@ -78,7 +78,7 @@ function SearchList({
 	}
 
 	return (
-		<div>
+		<ResultWrapper>
 			{searchInput == '' ? (
 				<>
 					<div>
@@ -143,14 +143,19 @@ function SearchList({
 					)}
 				</>
 			)}
-		</div>
+		</ResultWrapper>
 	)
 }
 export default SearchList
+
+const ResultWrapper = styled.div`
+	padding: 5px 10px;
+`
 
 const ResultBox = styled.div`
 	:hover {
 		cursor: pointer;
 		background-color: pink;
+		font-size: large;
 	}
 `

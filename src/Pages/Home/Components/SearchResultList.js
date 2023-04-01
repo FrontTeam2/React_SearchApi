@@ -25,4 +25,7 @@ export default SearchResultList
 
 const ResultList = styled.div`
 	background-color: #bfffb9;
+	border: 0.2rem solid gray;
+	border-radius: 1rem;
+	padding: 1rem;
 `

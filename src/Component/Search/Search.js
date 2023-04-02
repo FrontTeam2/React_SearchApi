@@ -148,6 +148,7 @@ function Search() {
 					<S.SearchButton
 						type="button"
 						onMouseDown={() => onSearch(focusText || text)}
+						onClick={() => setIsFocus(false)}
 					>
 						<S.SearchImg src="../../search.png" />
 					</S.SearchButton>

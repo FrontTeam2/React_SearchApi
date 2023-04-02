@@ -5,10 +5,9 @@ const { createProxyMiddleware } = require('http-proxy-middleware')
 module.exports = function (app) {
 	app.use(
 		'/search',
-		createProxyMiddleware('/search', {
-			target: 'http://port-0-backdeploytest-6g2llfzbkzp4.sel3.cloudtype.app',
+		createProxyMiddleware({
+			target: 'https://port-0-backdeploytest-6g2llfzbkzp4.sel3.cloudtype.app',
 			changeOrigin: true,
-			secure: false
 		}),
 	)
 }

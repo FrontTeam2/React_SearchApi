@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import SearchAPI from '../../Api/searchAPI'
 import useDebounce from '../../Hooks/useDebounce'
-// import { IoMdCloseCircleOutline } from "react-icons/io";
 
 function Search() {
 	const inputRef = useRef()
@@ -135,7 +134,6 @@ function Search() {
 					setIsFocus(false)
 				}}
 			>
-				{/* <S.Logo>HN</S.Logo> */}
 				<S.SearchBox>
 					<S.SearchBar
 						onChange={onChangeText}
@@ -147,7 +145,6 @@ function Search() {
 						}}
 						placeholder="검색어를 입력해주세요."
 					/>
-					{/* <IoMdCloseCircleOutline /> */}
 					<S.SearchButton
 						type="button"
 						onMouseDown={() => onSearch(focusText || text)}
@@ -272,7 +269,6 @@ const SearchFocus = styled.li`
 
 const SearchChange = styled.div`
 	margin-top: 10px;
-	/* text-align: center; */
 `
 
 const S = {

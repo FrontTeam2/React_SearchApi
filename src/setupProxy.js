@@ -6,7 +6,7 @@ module.exports = function (app) {
 	app.use(
 		'/search',
 		createProxyMiddleware('/search', {
-			target: 'https://port-0-backdeploytest-6g2llfzbkzp4.sel3.cloudtype.app/',
+			target: 'https://port-0-backdeploytest-6g2llfzbkzp4.sel3.cloudtype.app',
 			changeOrigin: true,
 		}),
 	)

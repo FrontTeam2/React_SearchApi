@@ -23,5 +23,10 @@ const GlobalStyles = createGlobalStyle`
     li{
         list-style: none;
     }
+
+    li:hover{
+        cursor: pointer;
+        background: #D9D9D9;
+    }
 `
 export default GlobalStyles

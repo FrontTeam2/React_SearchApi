@@ -1,70 +1,31 @@
-# Getting Started with Create React App
+# 🔍 프로젝트 : 검색어 조회
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+프로젝트 설명 : 
+검색어를 조회하기 위한 데이터를 서버에서 호출하고, 사용자 행동을 중심으로 최근 검색어를 저장하는 프로젝트 입니다. 
 
-## Available Scripts
+## 프로젝트 구현
+[New Recording - 2023. 4. 2. 오후 11_27_58 (1).webm](https://user-images.githubusercontent.com/77373566/229359276-0d7e2568-ee12-45a1-9f09-424e854ca1b0.webm)
 
-In the project directory, you can run:
+### 프로젝트 수행 과정
 
-### `npm start`
+1) API 로직 이해
+2) 서버 데이터 호출
+3) 최근 검색어 저장
+    - 저장 검색어 5개로 제한
+4) 중복 검색어 상위 랭킹
+5) hover(마우스), focus(키보드) 하이라이트
+6) API 콜 최적화 : 디바운싱
+7) 관심사 분리
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 수행과정 중 이슈
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1) API 로직 이해 : assemble, disassemble, startsWith ... 처음 보는 메서드에 당황 -> 구글링해서 로직 이해 !
 
-### `npm test`
+![API 로직이해](https://user-images.githubusercontent.com/77373566/229358275-e0966910-ae6b-4921-9ffb-35e3f9e2cd23.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+5) hover(마우스), focus(키보드) 하이라이트 : 키보드를 통한 focus 하이라이트에서 역경 -> event key값에 따라 로직이 변경되고, 특히, Enter를 누르기 전의 여러 상황을 고려
+    - 아직 해결이 안된 문제 : ArrowDown 이후, Enter일 경우에 최근 검색어에 focus text가 저장이 안되는 중
 
-### `npm run build`
+![e key Enter 이해](https://user-images.githubusercontent.com/77373566/229358861-23965751-dce4-4469-aa34-d78925dfafe4.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+7) 관심사 분리 : 수행을 하지 못해 아쉬운 것 -> 이번 프로젝트를 통해 소규모 프로젝트이어도 관심사 분리를 통해 코드 가독성을 높혀야 하는 것을 깨달음...

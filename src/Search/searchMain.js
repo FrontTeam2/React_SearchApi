@@ -3,16 +3,15 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import List from './searchList'
 import useDeBounce from '../CustomHooks/useDebounce'
-import RecentList from './recentList'
-
+import RecentList from '../Search/recentList'
 function SearchMain() {
 	const [list, setList] = useState([])
 	const [input, setInput] = useState('')
-	const [recent, setRecent] = useState(
-		JSON.parse(localStorage.getItem('recent')),
-	)
+	const [recent, setRecent] = useState([])
+
 	// 커스텀훅 만들어서 api를 0.5sec로 조절함
 	const debounceVal = useDeBounce(input)
+	console.log({ debounceVal })
 
 	// axios통신
 	const getData = async () => {
@@ -21,9 +20,7 @@ function SearchMain() {
 				`http://localhost:8080/search?key=${debounceVal}`,
 			)
 			setList(data)
-		} catch (err) {
-			setList([err.response.data])
-		}
+		} catch (err) {}
 	}
 	console.log(recent)
 	// input값 state관리
@@ -38,7 +35,8 @@ function SearchMain() {
 
 	//추가버튼
 	const onSearchBtn = () => {
-		if (!input) return
+		if (input.trim().length === 0) return
+
 		if (!localStorage.getItem('recent')) {
 			localStorage.setItem('recent', JSON.stringify([]))
 		}
@@ -63,36 +61,44 @@ function SearchMain() {
 
 	//최근검색 초기화버튼
 	const [focusInx, setFocusInx] = useState(-1)
-	const [focusRecentInx, setFocusRecentInx] = useState(-1)
-
-	const onResetBtn = () => {
-		localStorage.clear()
-		setRecent([])
-	}
 
 	//키보드 이벤트
 	const onkeyDown = e => {
 		//검색list
+		if (e.nativeEvent.isComposing) return
 		if (e.key === 'ArrowDown') {
 			setFocusInx(prev => (prev + 1) % list.length)
-			if (!input) {
-				{
-					setFocusRecentInx(prev => (prev + 1) % recent.length)
-				}
-			}
 		}
 		if (e.key === 'ArrowUp') {
 			focusInx === -1
 				? setFocusInx(list.length - 1)
 				: setFocusInx(prev => prev - 1)
 		}
-		if (!input) {
-			focusRecentInx === -1
-				? setFocusRecentInx(list.length - 1)
-				: setFocusRecentInx(prev => prev - 1)
+		if (e.key === 'Enter') {
+			if (input.trim().length === 0) return
+			if (!localStorage.getItem('recent')) {
+				localStorage.setItem('recent', JSON.stringify([]))
+			}
+			localStorage.setItem('recent', JSON.stringify(recent))
+			const arr = JSON.parse(localStorage.getItem('recent'))
+			if (arr.find(el => el === input)) {
+				let overlapArr = arr.filter(el => el !== input)
+				return (
+					overlapArr.unshift(input),
+					setRecent(overlapArr),
+					localStorage.setItem('recent', JSON.stringify(overlapArr))
+				)
+			}
+			arr.unshift(list[focusInx])
+			if (arr.length === 6) {
+				arr.pop()
+			}
+			setRecent(arr)
+			localStorage.setItem('recent', JSON.stringify(arr))
+			setFocusInx(-1)
 		}
-		console.log(list[focusInx + 1])
 	}
+
 	return (
 		<S.Div>
 			<S.Search>
@@ -100,15 +106,16 @@ function SearchMain() {
 					onChange={searchInput}
 					onKeyDown={onkeyDown}
 					value={list[focusInx]}
+					placeholder={'무엇이든 검색해보살 :)'}
 				/>
-				<Button1 onClick={onSearchBtn}>검색</Button1>
-				<Button2 onClick={onResetBtn}>초기화</Button2>
+				<S.Button1 onClick={onSearchBtn}>검색</S.Button1>
+
+				{debounceVal.length === 0 && recent ? (
+					<RecentList recent={recent} setRecent={setRecent} />
+				) : (
+					<List list={list} focusInx={focusInx} input={input} recent={recent} />
+				)}
 			</S.Search>
-			{debounceVal.length === 0 && recent ? (
-				<RecentList recent={recent} focusRecentInx={focusRecentInx} />
-			) : (
-				<List list={list} focusInx={focusInx} />
-			)}
 		</S.Div>
 	)
 }
@@ -120,66 +127,52 @@ const Div = styled.div`
 	flex-direction: column;
 	align-items: center;
 	padding-top: 100px;
-	background-color: #fdf5e6;
-	height: 1200px;
+	background-color: #505050;
+	border: none;
+	height: 2000px;
 `
 const Input = styled.input`
-	padding: 8px 110px;
+	padding: 10px 320.5px 10px 22.5px;
 	font-size: 18px;
-	text-align: center;
-	border: none;
+	text-align: left;
 	font-weight: bold;
-	border-radius: 20px;
+	border-radius: 20px 20px 0 0;
+	border: 1px solid white;
 	position: relative;
 	:focus {
 		outline: none;
+		border-radius: 20px 20px 0 0;
 	}
-`
-const Not = styled.div`
-	padding: 8px 138px;
-	font-size: 18px;
-	font-weight: bold;
-	font-size: 18px;
-	border: none;
 `
 
 const Search = styled.button`
 	display: flex;
+	flex-direction: column;
+	align-items: center;
 	margin: 0;
 	padding: 0;
-	background-color: #fdf5e6;
 	border: none;
+	border-bottom: 1px solid gray;
+	background-color: #505050;
+`
+const Button1 = styled.button`
+	font-size: 20px;
+	opacity: 0.6;
+	font-weight: bold;
+	border: none;
+	cursor: pointer;
+	position: absolute;
+	right: 600px;
+	top: 117px;
+	border: none;
+	background-color: white;
+	:hover {
+		color: gray;
+	}
 `
 const S = {
 	Div,
 	Input,
-	Not,
 	Search,
+	Button1,
 }
-const Button1 = styled.button`
-	padding: 11px 10px;
-	font-size: 18;
-	border: none;
-	/* background-color: #fdf5e6; */
-	cursor: pointer;
-	position: absolute;
-	right: 680px;
-	:hover {
-		background-color: #deb887;
-	}
-	background-color: #ffdead;
-`
-const Button2 = styled.button`
-	padding: 11px 5px;
-	font-size: 18;
-	border: none;
-	border-radius: 0px 20px 20px 0;
-	background-color: #fdf5e6;
-	cursor: pointer;
-	position: absolute;
-	right: 640px;
-	:hover {
-		background-color: #deb887;
-	}
-	background-color: #ffdead;
-`

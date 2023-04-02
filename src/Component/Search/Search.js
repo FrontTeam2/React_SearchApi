@@ -32,7 +32,7 @@ function Search() {
 	const getData = async text => {
 		try {
 			const res = await SearchAPI.getSearch({ text })
-			setTextList(res.data.slice(0, 5))
+			setTextList(res.data.slice(0, 15))
 		} catch (err) {
 			setTextList([err.response.data])
 		}
@@ -54,49 +54,38 @@ function Search() {
 			textList[0] !== '검색어를 입력해주세요.' &&
 			textList[0] !== '검색 결과가 없습니다.'
 
+		if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Process') {
+			setFocusIdx(-1)
+		}
+
 		if (e.key === 'ArrowDown') {
 			isFocusable && setFocusIdx(prev => (prev + 1) % length)
 			if (!text) setFocusIdx(prev => (prev + 1) % history.length)
 		}
+
 		if (e.key === 'ArrowUp') {
 			isFocusable && setFocusIdx(prev => (prev - 1 + length) % length)
 			if (!text) setFocusIdx(prev => (prev - 1) % history.length)
 		}
+
 		if (e.key === 'Enter') {
 			if (!text) setText(history[focusIdx])
 			isFocusable && focusIdx >= 0 && setText(textList[focusIdx])
 
-			console.log(text)
+			let newHistory
+			if (history !== null) newHistory = [focusText || text, ...history]
+			else newHistory = [focusText || text]
 
-			let newHistory = [history[focusIdx], ...history]
-			console.log(newHistory)
+			setHistory([...newHistory])
 
-			if (history !== null) {
-				newHistory = [
-					textList[focusIdx] || history[focusIdx] || text,
-					...history,
-				]
-			} else {
-				newHistory = [textList[focusIdx] || history[focusIdx] || text]
-			}
-
-			const filterList = newHistory.filter(
-				(el, i) => newHistory.indexOf(el) === i,
-			)
-			console.log(newHistory)
-
-			if (history == null) {
-				setHistory([...newHistory])
-			} else {
-				if (history.length >= 5) {
-					setHistory([...filterList.slice(0, -1)])
-				} else {
-					setHistory([...filterList])
-				}
+			if (history) {
+				const elseRecent = history.filter(item => item !== (focusText || text))
+				setHistory([focusText || text, ...elseRecent.slice(0, 4)])
 			}
 
 			setIsFocus(false)
 			setIsSearch(true)
+			setFocusIdx(-1)
 			inputRef.current.blur()
 		}
 		if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Process') {
@@ -107,13 +96,26 @@ function Search() {
 	console.log(focusIdx)
 
 	const onSearch = word => {
-		const newList = [word, ...history]
-		setHistory(newList.filter((el, i) => newList.indexOf(el) === i))
+		let newHistory
+		if (history !== null) newHistory = [word, ...history]
+		else newHistory = [word]
+
+		setHistory([...newHistory])
+
+		if (history) {
+			const elseRecent = history.filter(item => item !== word)
+			setHistory([word, ...elseRecent.slice(0, 4)])
+		}
+
+		setIsFocus(false)
+		setIsSearch(true)
+		setFocusIdx(-1)
+		inputRef.current.blur()
 	}
 
 	useEffect(() => {
 		if (history !== null) {
-			localStorage.setItem('search', JSON.stringify([...new Set(history)]))
+			localStorage.setItem('search', JSON.stringify(history))
 		}
 	}, [history])
 
@@ -141,9 +143,13 @@ function Search() {
 						onFocus={() => {
 							setIsSearch(false)
 						}}
+						placeholder="검색어를 입력해주세요."
 					/>
 					{/* <IoMdCloseCircleOutline /> */}
-					<S.SearchButton>
+					<S.SearchButton
+						type="button"
+						onClick={() => onSearch(focusText || text)}
+					>
 						<S.SearchImg src="../../search.png" />
 					</S.SearchButton>
 				</S.SearchBox>

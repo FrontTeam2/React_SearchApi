@@ -29,6 +29,7 @@ function SearchList({
 		}
 	}
 
+	// 디바운스 적용
 	// searchInput값이 바뀔 때마다 안에 정의 실행
 	useEffect(() => {
 		const handler = setTimeout(() => {
@@ -46,7 +47,7 @@ function SearchList({
 				.catch(error => {
 					console.log(error)
 				})
-		}, 500)
+		}, 300)
 
 		return () => {
 			clearTimeout(handler)

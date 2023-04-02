@@ -22,19 +22,6 @@ function HomePage() {
 
 	const [showSearchList, setShowSearchList] = useState(true) // 검색창 활성화 관리
 
-	// 디바운스 적용
-	useEffect(() => {
-		const handler = setTimeout(() => {
-			// 입력창 값이 변경될 때마다 지연 시간 후에 setSearchInput 함수를 실행
-			console.log(searchInput)
-		}, 300)
-
-		// 이전 타이머를 제거하여 중복 실행되지 않도록 함
-		return () => {
-			clearTimeout(handler)
-		}
-	}, [searchInput])
-
 	// 키 입력
 	const handleKeyPress = e => {
 		// Enter 키 입력

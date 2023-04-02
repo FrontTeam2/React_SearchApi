@@ -4,7 +4,7 @@
 검색어를 조회하기 위한 데이터를 서버에서 호출하고, 사용자 행동을 중심으로 최근 검색어를 저장하는 프로젝트 입니다. 
 
 ## 프로젝트 구현
-[New Recording - 2023. 4. 2. 오후 11_27_58 (1).webm](https://user-images.githubusercontent.com/77373566/229359276-0d7e2568-ee12-45a1-9f09-424e854ca1b0.webm)
+[New Recording - 2023. 4. 2. 오후 11_38_21.webm](https://user-images.githubusercontent.com/77373566/229359861-541618e8-433e-48f5-8569-01f6bca8d441.webm)
 
 ### 프로젝트 수행 과정
 

@@ -58,7 +58,7 @@ const GlobalStyles = createGlobalStyle`
   }
 
   span {
-    font-size:${({ theme }) => theme.FONT_SIZE.small}
+    font-size:${({ theme }) => theme.FONT_SIZE.medium}
   }
 
   button {

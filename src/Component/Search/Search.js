@@ -1,7 +1,8 @@
 import { useRef } from 'react'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import SearchAPI from '../../Api/searchAPI'
+import useDebounce from '../../Hooks/useDebounce'
 // import { IoMdCloseCircleOutline } from "react-icons/io";
 
 function Search() {
@@ -20,24 +21,26 @@ function Search() {
 
 	const [isSearch, setIsSearch] = useState(false)
 
+	const debounce = useDebounce(text, 200)
+
 	const onChangeText = e => {
 		setIsSearch(false)
 		setIsFocus(true)
 		setText(e.target.value)
 	}
 
-	const getData = useCallback(async () => {
+	const getData = async text => {
 		try {
 			const res = await SearchAPI.getSearch({ text })
 			setTextList(res.data.slice(0, 5))
 		} catch (err) {
 			setTextList([err.response.data])
 		}
-	}, [text])
+	}
 
 	useEffect(() => {
-		getData()
-	}, [getData])
+		getData(debounce)
+	}, [debounce])
 
 	useEffect(() => {
 		if (!text) setFocusText(focusIdx >= 0 && history[focusIdx])
@@ -54,10 +57,12 @@ function Search() {
 		if (e.key === 'ArrowDown') {
 			isFocusable && setFocusIdx(prev => (prev + 1) % length)
 			if (!text) setFocusIdx(prev => (prev + 1) % history.length)
-		} else if (e.key === 'ArrowUp') {
+		}
+		if (e.key === 'ArrowUp') {
 			isFocusable && setFocusIdx(prev => (prev - 1 + length) % length)
 			if (!text) setFocusIdx(prev => (prev - 1) % history.length)
-		} else if (e.key === 'Enter') {
+		}
+		if (e.key === 'Enter') {
 			if (!text) setText(history[focusIdx])
 			isFocusable && focusIdx >= 0 && setText(textList[focusIdx])
 
@@ -93,6 +98,9 @@ function Search() {
 			setIsFocus(false)
 			setIsSearch(true)
 			inputRef.current.blur()
+		}
+		if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Process') {
+			setFocusIdx(-1)
 		}
 	}
 	console.log(text, focusText)

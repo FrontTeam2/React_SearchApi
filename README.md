@@ -1,10 +1,11 @@
-# Getting Started with Create React App
+# 프로젝트 설명
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+본 프로젝트는 API 콜 최적화를 이용한 검색어 입력 사이트입니다.
 
-## Available Scripts
+# 구현 화면
 
-In the project directory, you can run:
+## 검색어 입력전
+![시작화면](https://user-images.githubusercontent.com/119868766/229359380-796ca3c6-fd46-47ac-88b4-e8c4bf035431.gif)
 
 ### `npm start`
 

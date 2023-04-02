@@ -96,7 +96,7 @@ function Search() {
 		}
 	}
 	console.log(text, focusText)
-	console.log(focusIdx)
+	console.log(focusText || text)
 
 	const onSearch = word => {
 		console.log(word)
@@ -153,7 +153,7 @@ function Search() {
 					{/* <IoMdCloseCircleOutline /> */}
 					<S.SearchButton
 						type="button"
-						onClick={() => onSearch(focusText || text)}
+						onMouseDown={() => onSearch(focusText || text)}
 					>
 						<S.SearchImg src="../../search.png" />
 					</S.SearchButton>

@@ -11,7 +11,6 @@ function SearchMain() {
 
 	// 커스텀훅 만들어서 api를 0.5sec로 조절함
 	const debounceVal = useDeBounce(input)
-	console.log({ debounceVal })
 
 	// axios통신
 	const getData = async () => {
@@ -22,7 +21,7 @@ function SearchMain() {
 			setList(data)
 		} catch (err) {}
 	}
-	console.log(recent)
+
 	// input값 state관리
 	const searchInput = e => {
 		setInput(e.target.value)

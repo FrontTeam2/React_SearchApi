@@ -95,11 +95,8 @@ function Search() {
 			setFocusIdx(-1)
 		}
 	}
-	console.log(text, focusText)
-	console.log(focusText || text)
 
 	const onSearch = word => {
-		console.log(word)
 		setText(word)
 		let newHistory
 		if (history !== null) newHistory = [word, ...history]

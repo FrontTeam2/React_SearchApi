@@ -4,13 +4,12 @@
 
 # 구현 화면
 
-## 검색어 입력전
+- 검색어 입력전
 ![시작화면](https://user-images.githubusercontent.com/119868766/229359380-796ca3c6-fd46-47ac-88b4-e8c4bf035431.gif)
 
-### `npm start`
+- 검색어를 입력하면 연관 검색어 표시 및 엔터키 입력 시 최근 검색어 추가
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+![녹화_2023_04_02_23_36_46_989_AdobeExpress](https://user-images.githubusercontent.com/119868766/229359906-df5f36e3-9e20-477b-a3b6-fd2dedbc9b76.gif)
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.

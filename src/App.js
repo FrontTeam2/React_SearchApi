@@ -29,6 +29,7 @@ function App() {
 		setFocus(false)
 	}
 	useEffect(() => {
+		// 디바운싱 작업
 		const timer = setTimeout(() => {
 			getSearchList(search)
 		}, 300)
@@ -45,6 +46,7 @@ function App() {
 	}, [])
 
 	useEffect(() => {
+		// 로컬 스토리지에 최근검색어 저장
 		localStorage.setItem('recentSearch', JSON.stringify(recentSearch))
 	}, [recentSearch])
 
@@ -57,6 +59,7 @@ function App() {
 			setRecentSearch(newRecent)
 		}
 		if (recentSearch) {
+			//중복 키워드 작업
 			const elseRecent = recentSearch.filter(item => item !== search)
 			setRecentSearch([search, ...elseRecent.slice(0, 4)])
 		}
@@ -69,8 +72,11 @@ function App() {
 	const onDeleteSearch = () => {
 		setSearch('')
 	}
-
+	const onClickChangeSearch = value => {
+		setSearch(value)
+	}
 	const onChangeFocus = event => {
+		//키보드 이벤트
 		let length = relevantSearch.length
 
 		let isFocus =
@@ -96,75 +102,87 @@ function App() {
 
 	return (
 		<Wrapper>
-			<SearchBox onSubmit={handleSearch}>
-				<FaSearch
-					style={{
-						position: 'absolute',
-						top: '50%',
-						left: '20px',
-						transform: 'translate(-50%,-50%)',
-					}}
-				/>
-				<Input
-					type="text"
-					placeholder="검색어를 입력해주세요."
-					value={search}
-					onChange={handleInputChange}
-					onFocus={onFocus}
-					onBlur={onBlur}
-					onKeyDown={onChangeFocus}
-				/>
-				{search !== '' && (
-					<FaTimes
+			<SearchBox onSubmit={handleSearch} onFocus={onFocus}>
+				<InputBox>
+					<FaSearch
 						style={{
 							position: 'absolute',
 							top: '50%',
-							right: '55',
+							left: '20px',
 							transform: 'translate(-50%,-50%)',
-							cursor: 'pointer',
 						}}
-						onClick={onDeleteSearch}
 					/>
-				)}
+					<Input
+						type="text"
+						placeholder="검색어를 입력해주세요."
+						value={search}
+						onChange={handleInputChange}
+						onKeyDown={onChangeFocus}
+					/>
+					{search !== '' && (
+						<FaTimes
+							style={{
+								position: 'absolute',
+								top: '50%',
+								right: '55',
+								transform: 'translate(-50%,-50%)',
+								cursor: 'pointer',
+							}}
+							onClick={onDeleteSearch}
+						/>
+					)}
 
-				<SearchButton type="submit">검색</SearchButton>
+					<SearchButton type="submit">검색</SearchButton>
+				</InputBox>
+				<RecentBox>
+					{focus && recentSearch.length > 0 && (
+						<Recent>
+							{recentSearch.map((item, index) => (
+								<li key={index} onClick={() => onClickChangeSearch(item)}>
+									<FaRegClock />
+									{item}
+								</li>
+							))}
+						</Recent>
+					)}
+				</RecentBox>
+				<RelevantBox>
+					{focus && relevantSearch.length > 0 && (
+						<Relvant>
+							{relevantSearch.map((item, idx) => {
+								return (
+									<li
+										key={idx}
+										onClick={() => onClickChangeSearch(item)}
+										style={{
+											backgroundColor: focusIdx === idx && 'rgb(220,220,200)',
+										}}
+									>
+										{item === '검색어를 입력해주세요.' ||
+										search === '' ? null : item === '검색 결과가 없습니다.' ? (
+											<>{item}</>
+										) : item.includes(search) ? (
+											<>
+												<FaSearchPlus />
+												<p>
+													{item.split(search)[0]}
+													<span style={{ fontWeight: 'bold' }}>{search}</span>
+													{item.split(search)[1]}
+												</p>
+											</>
+										) : (
+											<>
+												<FaSearchPlus />
+												{item}
+											</>
+										)}
+									</li>
+								)
+							})}
+						</Relvant>
+					)}
+				</RelevantBox>
 			</SearchBox>
-			<RecentBox>
-				{focus && recentSearch.length > 0 && (
-					<Recent>
-						{recentSearch.map((item, index) => (
-							<li key={index}>
-								<FaRegClock />
-								{item}
-							</li>
-						))}
-					</Recent>
-				)}
-			</RecentBox>
-			<RelevantBox>
-				{focus &&
-					relevantSearch &&
-					relevantSearch.map((item, idx) => {
-						return (
-							<Relvant
-								key={idx}
-								style={{
-									backgroundColor: focusIdx === idx && 'rgb(220,220,200)',
-								}}
-							>
-								{item === '검색어를 입력해주세요.' ||
-								search === '' ? null : item === '검색 결과가 없습니다.' ? (
-									<>{item}</>
-								) : (
-									<>
-										<FaSearchPlus />
-										{item}
-									</>
-								)}
-							</Relvant>
-						)
-					})}
-			</RelevantBox>
 		</Wrapper>
 	)
 }
@@ -181,41 +199,67 @@ const Wrapper = styled.div`
 	background-color: #fff;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
 `
 
 const SearchBox = styled.form`
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1px;
+	margin-top: 10px;
+
+	border: none;
+	border-radius: 10px;
+	/* border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px; */
+	/* box-shadow: 0px 0px 3px 0px gray; */
+`
+const InputBox = styled.div`
 	position: relative;
 	width: 100%;
 	display: flex;
-	padding: 0 10 0 10px;
+	border-bottom: 1px solid gray;
 `
-
 const Input = styled.input`
 	width: 90%;
-	border-radius: 3px;
+	border: none;
+	:focus {
+		outline: none;
+	}
 
-	padding: 10px 30px;
+	padding: 10px 40px;
 `
 
 const SearchButton = styled.button`
 	width: 10%;
-	border-radius: 3px;
+
+	border: none;
 	background-color: white;
 	cursor: pointer;
 `
 const RelevantBox = styled.div`
 	width: 100%;
-
-	align-items: flex-start;
 `
-const Relvant = styled.span`
+const Relvant = styled.ul`
 	margin-left: 20px;
-	display: flex;
-	gap: 10px;
-	align-items: center;
-	:hover {
-		background-color: rgb(220, 220, 200);
+	align-items: flex-start;
+	padding: 0;
+
+	& > li {
+		list-style: none;
+		align-items: center;
+		font-size: 16px;
+		cursor: pointer;
+		display: flex;
+		gap: 10px;
+		> p {
+			margin: 0;
+		}
+
+		:hover {
+			background-color: rgb(220, 220, 200);
+		}
 	}
 `
 
@@ -226,12 +270,15 @@ const Recent = styled.ul`
 	margin-left: 20px;
 	align-items: flex-start;
 	padding: 0;
+
 	& > li {
 		list-style: none;
 		display: flex;
 		gap: 10px;
 		align-items: center;
 		font-size: 16px;
+		cursor: pointer;
+
 		:hover {
 			background-color: rgb(220, 220, 200);
 		}

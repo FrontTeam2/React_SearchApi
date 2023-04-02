@@ -191,7 +191,7 @@ function Search() {
 										style={{
 											backgroundColor: focusIdx === index && '#D9D9D9',
 										}}
-										onMouseDown={() => onSearch(text)}
+										onMouseDown={() => onSearch(item)}
 									>
 										{item.includes(text) ? (
 											<p>

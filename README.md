@@ -1,70 +1,46 @@
-# Getting Started with Create React App
+# 📝 프로젝트 설명
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+본 프로젝트는 API 콜 최적화를 적용한 검색어 조회 사이트 입니다.
 
-## Available Scripts
+# 💻 구현 화면
+### 메인 페이지
+![화면 캡처 2023-04-03 003321](https://user-images.githubusercontent.com/110607164/229363200-320bc57c-4c29-4f12-ba81-f1d82bfddef3.png)
 
-In the project directory, you can run:
+### 검색창 클릭 시 입력 텍스트가 없을 때 최근 검색어 5개가 뜨도록
+![main](https://user-images.githubusercontent.com/110607164/229362999-85e80568-1c34-4c9d-84f4-14fd69e68d66.gif)
 
-### `npm start`
+### 검색어 입력 중 입력 검색어가 포함된 단어에 하이라이트
+![화면 캡처 2023-04-03 004150](https://user-images.githubusercontent.com/110607164/229363657-5f7f467a-8a16-476e-ad15-d94778b1cad0.png)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 검색어 입력 후 엔터로 검색
+![엔터검색](https://user-images.githubusercontent.com/110607164/229364548-1366fb29-a6a1-425b-81b6-d67fbc22ea1f.gif)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 키보드로 상하이동 후 searchButton 클릭으로 검색
+![키보드상하검색 서치버튼](https://user-images.githubusercontent.com/110607164/229364961-a938b2c9-08f0-4b6e-b619-8599453b55f4.gif)
 
-### `npm test`
+### 마우스 클릭으로 검색
+![마우스클릭검색](https://user-images.githubusercontent.com/110607164/229365084-a239e050-ea31-4ec4-a1bc-22748546c152.gif)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+# 구현 기능
+### API 콜 최적화
+- 검색 서비스는 사용자가 입력 될 때마다 API 콜을 요청하기 때문에 굉장히 비효율적일 수 있다. 이러한 경우 중복된 요청이나 필요없는 요청이 발생될 수 있음
+- 이를 최적화 하기 위한 방법으론 쓰로틀링, 디바운스 등이 있지만 여기선 디바운스를 사용하였다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- 디바운스 
+![api최적화](https://user-images.githubusercontent.com/110607164/229363965-e7d34190-9e3a-4b4c-85d6-3a57736ddea4.gif)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 최근 검색어
+- 최근 검색어는 최대 5개까지
+- 5개 안에 중복된 검색어가 있을 경우 해당 검색어는 새로 추가되는 것이 아닌 기존에 있던 검색어가 가장 첫번째로 이동된다.
+- 5개가 넘었을 때 새로운 검색어가 생긴다면 가장 마지막 검색어를 삭제한다.
+- 해당 데이터는 웹 페이지를 종료 후 다시 접속하여도 그대로 남아있어야 한다.
+-
+### 키보드 만으로 추천 검색어 및 일반 검색 기능 구현하기
+- 키보드 만으로 상하 이동 + ENTER로 검색이 가능해야합니다.
+- 마우스 클릭으로도  이벤트에 해당하는 검색어로 검색이 가능해야합니다.
+- 검색 시 별다른 페이지 이동 없이 최근 검색어가 추가되는 형태로 구현합니다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### 검색 단어 하이라이트
+- 검색어가 포함된 부분을 하이라이트한다.
+- 검색 결과가 없다면. 검색결과가 없습니다라는 백엔드에서 전송한 메시지를 보여주어야 합니다.

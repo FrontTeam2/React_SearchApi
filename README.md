@@ -11,60 +11,51 @@
 
 ![녹화_2023_04_02_23_36_46_989_AdobeExpress](https://user-images.githubusercontent.com/119868766/229359906-df5f36e3-9e20-477b-a3b6-fd2dedbc9b76.gif)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- 연관 검색어 방향키 컨트롤
 
-### `npm test`
+![녹화_2023_04_02_23_36_46_989_AdobeExpress (1)](https://user-images.githubusercontent.com/119868766/229360300-04190a63-538d-42c4-a65e-0c538a81559a.gif)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- 최근 검색어 5개 제한
+- 
+![녹화_2023_04_02_23_36_46_989_AdobeExpress (2)](https://user-images.githubusercontent.com/119868766/229360545-d12f023d-ac82-4afb-8db4-ca2304f49f6f.gif)
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# 주요 기능 설명
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- API 콜 최적화
+  
+  사용자가 압력 할 때마다 서버로 부터 데이터 요청을 하기 때문에 비효율적 일수도 있으므로, 디바운싱 작업을 통해 최적화.
+  
+- 최근 검색어 5개 제한
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+  사용자가 입력 완료한 검색어를 로컬 스토리지에 저장하고 검색어를 5개로 제한 함.
+  입력 완료한 검색어가 5개가 넘을 시, 최근 검색어 목록 중 가장 먼저 검색 된 것을 삭제.
+  
+- 키보드 방향키로 이용한 검색
+  
+  사용자가 검색어를 입력하면 연관 검색어 리스트가 나타남. 키보드 상하 방향키 및 Enter키로 검색 컨트롤 가능.
+ 
+- 검색 단어 하이라이트
 
-### `npm run eject`
+  입력한 검색어가 포함된 단어에 하이라이트 작업.
+  
+  
+ # API 콜 최적화 방법 - Debouncing
+ 
+  API 콜 최적화 방법엔 쓰로틀링 캐싱 디바운싱 등 여러가지가 있지만 이중에 디바운싱을 채택.
+  
+  ```
+  useEffect(() => {
+		// 디바운싱 작업
+		const timer = setTimeout(() => {
+			getSearchList(search)
+		}, 300)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+		return () => {
+			clearTimeout(timer)
+		}
+	}, [search])
+  
+  ```
+  
+  

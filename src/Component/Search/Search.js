@@ -59,13 +59,16 @@ function Search() {
 		}
 
 		if (e.key === 'ArrowDown') {
-			isFocusable && setFocusIdx(prev => (prev + 1) % length)
 			if (!text) setFocusIdx(prev => (prev + 1) % history.length)
+			isFocusable && setFocusIdx(prev => (prev + 1) % length)
 		}
 
 		if (e.key === 'ArrowUp') {
+			if (isFocusable && focusIdx === -1) setFocusIdx(length)
 			isFocusable && setFocusIdx(prev => (prev - 1 + length) % length)
-			if (!text) setFocusIdx(prev => (prev - 1) % history.length)
+			if (!text && focusIdx === -1) setFocusIdx(history.length)
+			if (!text)
+				setFocusIdx(prev => (prev - 1 + history.length) % history.length)
 		}
 
 		if (e.key === 'Enter') {
@@ -96,6 +99,8 @@ function Search() {
 	console.log(focusIdx)
 
 	const onSearch = word => {
+		console.log(word)
+		setText(word)
 		let newHistory
 		if (history !== null) newHistory = [word, ...history]
 		else newHistory = [word]
@@ -165,7 +170,7 @@ function Search() {
 											style={{
 												backgroundColor: focusIdx === index && '#D9D9D9',
 											}}
-											onClick={() => onSearch(text)}
+											onMouseDown={() => onSearch(item)}
 										>
 											{item}
 										</S.SearchFocus>
@@ -179,16 +184,24 @@ function Search() {
 					{text && (
 						<S.SearchChange>
 							<div>추천 검색어</div>
-							{textList.map((text, index) => {
+							{textList.map((item, index) => {
 								return (
 									<S.SearchFocus
 										key={index}
 										style={{
 											backgroundColor: focusIdx === index && '#D9D9D9',
 										}}
-										onClick={() => onSearch(text)}
+										onMouseDown={() => onSearch(text)}
 									>
-										{text}
+										{item.includes(text) ? (
+											<p>
+												{item.split(text)[0]}
+												<span style={{ fontWeight: 'bold' }}>{text}</span>
+												{item.split(text)[1]}
+											</p>
+										) : (
+											<p>{item}</p>
+										)}
 									</S.SearchFocus>
 								)
 							})}

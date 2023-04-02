@@ -12,12 +12,8 @@ function HomePage() {
 	const [recentList, setRecentList] = useState(
 		JSON.parse(localStorage.getItem('recentList' || '')),
 	)
-
-	// 포커스된 인덱스의 순서를 관리할 state
 	const [focusIdx, setFocusIdx] = useState(-1)
-	// 포커스된 텍스트를 관리할 state
 	const [focusText, setFocusText] = useState('')
-
 	const debounceValue = useDebounceValue(isSearch)
 
 	const handleChange = e => {
@@ -31,76 +27,98 @@ function HomePage() {
 				const res = await SearchApi.getSearch(debounceValue)
 				setResult(res.data)
 			} catch (error) {
-				setResult([err.res.data])
+				setResult([error.response.data])
+				setFocusIdx(-1)
+				setFocusText('')
 			}
 		}
 		if (debounceValue) getSearchData()
 	}, [debounceValue])
 
 	useEffect(() => {
-		if (focusIdx < result.length) {
+		if (!isSearch) {
+			setFocusText(focusIdx >= 0 && recentList[focusIdx])
+		} else {
 			setFocusText(focusIdx >= 0 && result[focusIdx])
 		}
 
 		if (focusIdx < 0) {
-			setFocusText(isSearch)
+			setFocusText('')
 		}
 	}, [focusIdx])
 
-	// input에서 Enter 이후 실행
+	// input 관련 핸들링
 	const handleSearch = e => {
 		if (e.key === 'ArrowDown') {
-			setFocusIdx((focusIdx + 1) % result.length)
+			if (isSearch) {
+				setFocusIdx(prev => (prev + 1) % result.length)
+			}
+
+			if (!isSearch) setFocusIdx(prev => (prev + 1) % recentList.length)
 		}
 
 		if (e.key === 'ArrowUp') {
-			setFocusIdx((focusIdx - 1) % result.length)
+			if (isSearch) {
+				setFocusIdx(prev => (prev - 1) % result.length)
+			}
+
+			if (!isSearch && focusIdx > -1) {
+				setFocusIdx(prev => (prev - 1) % recentList.length)
+			}
 		}
 
-		if (e.key === 'Escape' || e.key === 'Backspace') {
+		if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Process') {
 			setFocusIdx(-1)
 		}
 
 		if (e.key === 'Enter') {
-			e.preventDefault()
+			// ArrowDown 이후에 담기고, Enter ? Enter 후에 로직이 실행 ?
+			focusIdx >= 0 && result.length && setIsSearch(result[focusIdx])
 
-			// 없는 검색어 -> alert
-			const isValid = result.find(prev => prev === isSearch)
-			if (!isValid) {
-				alert('검색 결과가 없습니다.')
-				return
+			let addList
+			if (recentList !== null) {
+				addList = [result[focusIdx] || isSearch, ...recentList]
+			} else {
+				addList = [result[focusIdx] || isSearch]
+			}
+
+			setRecentList([...addList])
+
+			// 포커스...?
+			if (recentList !== null) {
+				const newFocus = [result[focusIdx], ...recentList.slice(0, 4)]
+				setRecentList(newFocus)
 			}
 
 			// 최근 검색어 : 5개 제한
-			setRecentList([isSearch])
 			if (recentList !== null) {
 				const newRecentSearch = [isSearch, ...recentList.slice(0, 4)]
 				setRecentList(newRecentSearch)
 			}
-			setIsSearch('')
 
 			// 중복 검색어 : 최근 검색어를 첫 번째로
 			if (recentList !== null) {
 				const elseList = recentList.filter(prev => prev !== isSearch)
 				setRecentList([isSearch, ...elseList.slice(0, 4)])
 			}
+
+			setIsSearch('')
+			setFocusText('')
 		}
 	}
 
 	// 연관 검색어에 생성된 Box 클릭시, input value에 담게끔
-	const handleConvertDefault = e => {
-		const sameValue = result.find(
-			prev => prev === e.target.children[1].innerText,
-		)
-		setIsSearch(sameValue)
-	}
+	const searchClick = word => {
+		setRecentList([word, ...recentList.slice(0, 4)])
 
-	// 최근 검색어에 생성된 Box 클릭시, input value에 담게끔
-	const handleConvertRecent = e => {
-		const sameValue = recentList.find(
-			prev => prev === e.target.children[1].innerText,
-		)
-		setIsSearch(sameValue)
+		const newResult = recentList.find(item => item === word)
+		const newList = recentList.filter(prev => prev !== word)
+
+		if (newResult) {
+			setRecentList([newResult, ...newList.slice(0, 4)])
+		}
+
+		setIsSearch(word)
 	}
 
 	// 로컬 스토리지 저장
@@ -123,11 +141,23 @@ function HomePage() {
 					<S.SearchList>
 						<S.DefaultSearch>
 							{debounceValue &&
-								result.map((list, index) => {
+								result.map((resultText, index) => {
 									return (
-										<S.ResultBox key={index} onClick={handleConvertDefault}>
+										<S.ResultBox
+											key={index}
+											onClick={() => searchClick(resultText)}
+											style={{ background: focusIdx === index && '#f7f7f7' }}
+										>
 											<IoSearchCircle style={{ fontSize: '3rem' }} />
-											<p>{list}</p>
+											{resultText.includes(isSearch) ? (
+												<p>
+													{resultText.split(isSearch)[0]}
+													<span style={{ fontWeight: 'bold' }}>{isSearch}</span>
+													{resultText.split(isSearch)[1]}
+												</p>
+											) : (
+												<p>{resultText}</p>
+											)}
 										</S.ResultBox>
 									)
 								})}
@@ -135,11 +165,18 @@ function HomePage() {
 						{recentList && (
 							<S.RecentSearch>
 								<h3>최근 검색어</h3>
-								{recentList.map((list, index) => {
+								{recentList.map((recentText, index) => {
 									return (
-										<S.ResultBox key={index} onClick={handleConvertRecent}>
+										<S.ResultBox
+											key={index}
+											onClick={() => searchClick(recentText)}
+											style={{
+												background:
+													!isSearch && focusIdx === index && '#f7f7f7',
+											}}
+										>
 											<IoSearchCircle style={{ fontSize: '3rem' }} />
-											<p>{list}</p>
+											<p>{recentText}</p>
 										</S.ResultBox>
 									)
 								})}

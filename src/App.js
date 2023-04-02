@@ -242,7 +242,7 @@ const RelevantBox = styled.div`
 	width: 100%;
 `
 const Relvant = styled.ul`
-	margin-left: 20px;
+	margin: 0 20px;
 	align-items: flex-start;
 	padding: 0;
 
@@ -267,7 +267,7 @@ const RecentBox = styled.div`
 	width: 100%;
 `
 const Recent = styled.ul`
-	margin-left: 20px;
+	margin: 20px 20px;
 	align-items: flex-start;
 	padding: 0;
 

@@ -1,9 +1,9 @@
-import axios from 'axios'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import List from './searchList'
 import useDeBounce from '../CustomHooks/useDebounce'
 import RecentList from '../Pages/recentList'
+import SearchApi from '../Apis/searchApi'
 function SearchMain() {
 	const [list, setList] = useState([])
 	const [input, setInput] = useState('')
@@ -12,11 +12,9 @@ function SearchMain() {
 
 	const debounceVal = useDeBounce(input)
 
-	const getData = async () => {
+	const getData = async key => {
 		try {
-			const { data } = await axios.get(
-				`http://localhost:8080/search?key=${debounceVal}`,
-			)
+			const { data } = await SearchApi.searchApi(key)
 			setList(data)
 		} catch (err) {}
 	}
@@ -26,7 +24,7 @@ function SearchMain() {
 	}
 
 	useEffect(() => {
-		getData()
+		getData(debounceVal)
 	}, [debounceVal])
 
 	const onSearchBtn = () => {

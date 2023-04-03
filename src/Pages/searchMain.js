@@ -3,16 +3,15 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import List from './searchList'
 import useDeBounce from '../CustomHooks/useDebounce'
-import RecentList from '../Search/recentList'
+import RecentList from '../Pages/recentList'
 function SearchMain() {
 	const [list, setList] = useState([])
 	const [input, setInput] = useState('')
 	const [recent, setRecent] = useState([])
+	const [focusInx, setFocusInx] = useState(-1)
 
-	// 커스텀훅 만들어서 api를 0.5sec로 조절함
 	const debounceVal = useDeBounce(input)
 
-	// axios통신
 	const getData = async () => {
 		try {
 			const { data } = await axios.get(
@@ -22,17 +21,14 @@ function SearchMain() {
 		} catch (err) {}
 	}
 
-	// input값 state관리
 	const searchInput = e => {
 		setInput(e.target.value)
 	}
 
-	// debounceVal 변경할때마다 axios 통신
 	useEffect(() => {
 		getData()
 	}, [debounceVal])
 
-	//추가버튼
 	const onSearchBtn = () => {
 		if (input.trim().length === 0) return
 
@@ -58,12 +54,7 @@ function SearchMain() {
 		localStorage.setItem('recent', JSON.stringify(arr))
 	}
 
-	//최근검색 초기화버튼
-	const [focusInx, setFocusInx] = useState(-1)
-
-	//키보드 이벤트
 	const onkeyDown = e => {
-		//검색list
 		if (e.nativeEvent.isComposing) return
 		if (e.key === 'ArrowDown') {
 			setFocusInx(prev => (prev + 1) % list.length)

@@ -1,5 +1,5 @@
-import SearchMain from './Search/searchMain'
 import './Css/reset.css'
+import SearchMain from './Pages/searchMain'
 function App() {
 	return (
 		<>

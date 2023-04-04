@@ -2,7 +2,6 @@ import SearchApi from 'Apis/searchApi'
 import { useAuth } from 'Contexts/auth'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import TokenService from 'Repositorys/tokenService'
 import styled from 'styled-components'
 import SearchList from './Components/SearchList'
 import SearchResultList from './Components/SearchResultList'
@@ -10,7 +9,7 @@ import SearchResultList from './Components/SearchResultList'
 function HomePage() {
 	const auth = useAuth()
 
-	const recentSearchArray = TokenService.getSearchTokens() // 토큰을 이용한 최근검색어 관리
+	const recentSearchArray = auth.get() // 토큰을 이용한 최근검색어 관리
 
 	const [searchInput, setSearchInput] = useState('') // 검색창에 있는 value 관리
 	const [searchList, setSearchList] = useState([]) // 검색해서 나온 list관리

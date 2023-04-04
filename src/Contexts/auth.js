@@ -13,11 +13,11 @@ const AuthContext = createContext()
 export const useAuth = () => useContext(AuthContext)
 
 function AuthProvider({ children }) {
-	const [searchToken, setSearchToken] = useState([])
+	const [searchToken, setSearchToken] = useState()
 
 	useEffect(() => {
 		// 만약에 웹 스토리지에 token이 남아 있다면
-		const token = TokenService.getToken()
+		const token = TokenService.getSearchTokens()
 		if (token) {
 			setSearchToken([token])
 		}
@@ -28,14 +28,17 @@ function AuthProvider({ children }) {
 	 */
 	const search = token => {
 		if (searchToken) {
-			// console.log(token)
+			console.log(token)
 			return TokenService.setToken(token)
 		}
 		TokenService.setToken(token)
 	}
 
-	const get = token => {
-		TokenService.getToken(token)
+	/**
+	 * 토큰 값 얻기
+	 */
+	const get = () => {
+		return TokenService.getSearchTokens()
 	}
 
 	return (

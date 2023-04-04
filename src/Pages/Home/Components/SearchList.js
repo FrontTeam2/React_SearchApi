@@ -1,4 +1,4 @@
-import SearchApi from 'Apis/searchApi'
+import getData from 'Apis/searchApi'
 import { useAuth } from 'Contexts/auth'
 import { useEffect } from 'react'
 import styled from 'styled-components'
@@ -17,17 +17,6 @@ function SearchList({
 	setShowSearchList,
 }) {
 	const auth = useAuth()
-
-	// API에서 Promise형태의 데이터 받아오기
-	const getData = async params => {
-		try {
-			const res = await SearchApi.getSearch(params)
-			return res.data
-		} catch (err) {
-			console.log(err.response.data)
-			return err.response.data
-		}
-	}
 
 	// 디바운스 적용
 	// searchInput값이 바뀔 때마다 안에 정의 실행

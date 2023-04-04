@@ -1,10 +1,10 @@
-import SearchApi from 'Apis/searchApi'
 import { useAuth } from 'Contexts/auth'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import styled from 'styled-components'
 import SearchList from './Components/SearchList'
 import SearchResultList from './Components/SearchResultList'
+import getData from 'Apis/searchApi'
 
 function HomePage() {
 	const auth = useAuth()
@@ -83,17 +83,6 @@ function HomePage() {
 		}
 
 		setShowSearchList(true)
-	}
-
-	// API에서 Promise형태의 데이터 받아오기
-	const getData = async params => {
-		try {
-			const res = await SearchApi.getSearch(params)
-			return res.data
-		} catch (err) {
-			console.log(err.response.data)
-			return err.response.data
-		}
 	}
 
 	// 검색어 변경 핸들러

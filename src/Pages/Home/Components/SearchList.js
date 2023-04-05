@@ -1,9 +1,5 @@
-import getData from 'Apis/searchApi'
 import { useAuth } from 'Contexts/auth'
-import { useEffect } from 'react'
 import styled from 'styled-components'
-
-const maxSearchList = 5
 
 function SearchList({
 	searchInput,
@@ -17,31 +13,6 @@ function SearchList({
 	setShowSearchList,
 }) {
 	const auth = useAuth()
-
-	// 디바운스 적용
-	// searchInput값이 바뀔 때마다 안에 정의 실행
-	useEffect(() => {
-		const handler = setTimeout(() => {
-			if (searchInput === '') {
-				setSearchList([])
-				return
-			}
-			getData(`${searchInput}`)
-				.then(data => {
-					if (typeof data !== 'string' && data.length > maxSearchList) {
-						return setSearchList(data.slice(0, maxSearchList))
-					}
-					setSearchList(data)
-				})
-				.catch(error => {
-					console.log(error)
-				})
-		}, 300)
-
-		return () => {
-			clearTimeout(handler)
-		}
-	}, [searchInput])
 
 	// 클릭으로 데이터 가져오기
 	function onClickSearch(value) {
@@ -59,12 +30,8 @@ function SearchList({
 		setShowSearchList(false)
 	}
 
-	if (searchList == '검색 결과가 없습니다.') {
-		return (
-			<>
-				<p>{searchList}</p>
-			</>
-		)
+	if (searchList === '검색 결과가 없습니다.') {
+		return <p>{searchList}</p>
 	}
 
 	return (

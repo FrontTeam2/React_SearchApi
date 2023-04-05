@@ -14,6 +14,12 @@ export const useAuth = () => useContext(AuthContext)
 
 function AuthProvider({ children }) {
 	const [searchToken, setSearchToken] = useState()
+	const [searchInput, setSearchInput] = useState('') // 검색창에 있는 value 관리
+	const [searchList, setSearchList] = useState([]) // 연관검색어 list관리
+	const [searchResultList, setSearchResultList] = useState([]) // 검색결과 list관리
+	const [chooseInput, setChooseInput] = useState(-1) // 검색창에서 하이라이트의 대상이 될 인덱스번호를 기억할 state
+	const [focusText, setFocusText] = useState('') // Focus된 텍스트
+	const [showSearchList, setShowSearchList] = useState(true) // 검색창 활성화 관리
 
 	useEffect(() => {
 		// 만약에 웹 스토리지에 token이 남아 있다면
@@ -42,7 +48,25 @@ function AuthProvider({ children }) {
 	}
 
 	return (
-		<AuthContext.Provider value={{ searchToken, search, get }}>
+		<AuthContext.Provider
+			value={{
+				searchToken,
+				search,
+				get,
+				searchInput,
+				setSearchInput,
+				searchList,
+				setSearchList,
+				searchResultList,
+				setSearchResultList,
+				chooseInput,
+				setChooseInput,
+				focusText,
+				setFocusText,
+				showSearchList,
+				setShowSearchList,
+			}}
+		>
 			{children}
 		</AuthContext.Provider>
 	)

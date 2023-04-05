@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 import styled from 'styled-components'
 import SearchList from './Components/SearchList'
 import SearchResultList from './Components/SearchResultList'
-import getData from 'Apis/searchApi'
 import useDebouncing from 'Hooks/useDebouncing'
 
 function HomePage() {
@@ -29,8 +28,9 @@ function HomePage() {
 				!auth.searchList.length &&
 				auth.setSearchInput(recentSearchArray[auth.chooseInput])
 
-			onSubmitSearch()
+			auth.onSubmitSearch(auth.focusText || auth.searchInput)
 			auth.setChooseInput(-1)
+			auth.setSearchList([])
 			auth.setShowSearchList(false)
 			return
 		}
@@ -42,7 +42,7 @@ function HomePage() {
 
 		// ⬆️키 입력
 		if (e.key === 'ArrowUp') {
-			console.log('키보드 ⬆️ 입력됨!')
+			// console.log('키보드 ⬆️ 입력됨!')
 
 			if (auth.chooseInput < 0) {
 				return
@@ -52,7 +52,10 @@ function HomePage() {
 
 		// ⬇️키 입력
 		if (e.key === 'ArrowDown') {
-			console.log('키보드 ⬇️ 입력됨!')
+			// console.log('키보드 ⬇️ 입력됨!')
+
+			// 검색결과가 없는 경우
+			if (auth.searchList == '검색 결과가 없습니다.') return
 
 			// 검색중인 경우
 			if (auth.searchList.length) {
@@ -85,26 +88,19 @@ function HomePage() {
 		auth.setSearchInput(key)
 	}
 
-	// 검색어로 데이터 가져오기
-	const onSubmitSearch = () => {
-		if (auth.focusText == '' && auth.searchInput == '') {
-			alert('검색어를 입력해주세요')
-			return
-		}
+	// 검색창 활성화 핸들러
+	const handleSearchOn = () => {
+		auth.setShowSearchList(true)
+	}
 
-		getData(`${auth.focusText || auth.searchInput}`)
-			.then(data => {
-				auth.setSearchResultList(data)
-				auth.setSearchList(data)
-			})
-			.catch(error => {
-				console.log(error)
-			})
-		auth.search(`${auth.focusText || auth.searchInput}`)
+	// 검색창 비활성화 핸들러
+	const handleSearchOff = () => {
+		auth.setShowSearchList(false)
 	}
 
 	// 검색어 부분 하이라이트 텍스트로 변경
 	useEffect(() => {
+		// 검색어가 비어있다면
 		if (auth.searchInput == '') {
 			auth.setFocusText(
 				auth.chooseInput >= 0 && recentSearchArray[auth.chooseInput],
@@ -116,12 +112,12 @@ function HomePage() {
 		)
 	}, [auth.chooseInput])
 
-	// console.log('searchInput : ' + searchInput)
-	// console.log('focusText : ' + focusText)
-
 	return (
 		<div className="App">
-			<Wrapper>
+			<Wrapper
+				onFocus={() => auth.setShowSearchList(true)}
+				onBlur={() => auth.setShowSearchList(false)}
+			>
 				<InputArea
 					type="text"
 					placeholder="검색어를 입력하세요"
@@ -131,23 +127,8 @@ function HomePage() {
 					onKeyDown={handleKeyPress}
 					autoComplete="off"
 				/>
-				<SearchList
-					searchInput={auth.searchInput}
-					setSearchInput={auth.setSearchInput}
-					searchList={auth.searchList}
-					setSearchList={auth.setSearchList}
-					chooseInput={auth.chooseInput}
-					recentSearchArray={recentSearchArray}
-					showSearchList={auth.showSearchList}
-					setSearchResultList={auth.setSearchResultList}
-					setShowSearchList={auth.setShowSearchList}
-				/>
-				{auth.searchResultList && (
-					<SearchResultList
-						searchResultList={auth.searchResultList}
-						chooseInput={auth.chooseInput}
-					/>
-				)}
+				<SearchList />
+				{auth.searchResultList.length !== 0 && <SearchResultList />}
 			</Wrapper>
 		</div>
 	)
@@ -162,7 +143,7 @@ const Wrapper = styled.div`
 
 const InputArea = styled.input`
 	width: 100%;
-	border: 1px solid gray;
+	border: 0.2rem solid gray;
 	border-radius: 1rem;
 	padding: 1rem;
 `

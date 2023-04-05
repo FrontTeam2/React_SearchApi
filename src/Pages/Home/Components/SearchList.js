@@ -1,51 +1,36 @@
 import { useAuth } from 'Contexts/auth'
 import styled from 'styled-components'
 
-function SearchList({
-	searchInput,
-	setSearchInput,
-	searchList,
-	setSearchList,
-	chooseInput,
-	recentSearchArray,
-	showSearchList,
-	setSearchResultList,
-	setShowSearchList,
-}) {
+function SearchList() {
 	const auth = useAuth()
 
-	// 클릭으로 데이터 가져오기
-	function onClickSearch(value) {
-		console.log('클릭됨!')
-		getData(value)
-			.then(data => {
-				setSearchResultList(data)
-				setSearchList([])
-			})
-			.catch(error => {
-				console.log(error)
-			})
-		auth.search(value)
-		setSearchInput(value)
-		setShowSearchList(false)
+	if (auth.searchList === '검색 결과가 없습니다.') {
+		return <p>{auth.searchList}</p>
 	}
 
-	if (searchList === '검색 결과가 없습니다.') {
-		return <p>{searchList}</p>
+	if (!auth.showSearchList) {
+		return
 	}
 
 	return (
 		<ResultWrapper>
-			{searchInput == '' ? (
+			{auth.searchInput == '' ? (
 				<>
 					<div>
-						<span>최근 검색어</span>
+						<h4>최근 검색어</h4>
 					</div>
-					{recentSearchArray ? (
+					<SplitLine />
+					{auth.get() ? (
 						<>
-							{recentSearchArray.map((item, index) => (
-								<ResultBox key={item} onClick={() => onClickSearch(item)}>
-									{index === chooseInput ? (
+							{auth.get().map((item, index) => (
+								<ResultBox
+									key={item}
+									onMouseDown={event => {
+										event.stopPropagation()
+										auth.onSubmitSearch(item)
+									}}
+								>
+									{index === auth.chooseInput ? (
 										<h3 style={{ backgroundColor: 'pink' }}>{item}</h3>
 									) : (
 										<p>{item}</p>
@@ -61,19 +46,25 @@ function SearchList({
 				</>
 			) : (
 				<>
-					{showSearchList && (
+					{auth.showSearchList && (
 						<>
-							{searchList.map((item, index) => (
-								<ResultBox key={index} onClick={() => onClickSearch(item)}>
-									{index === chooseInput ? (
+							{auth.searchList.map((item, index) => (
+								<ResultBox
+									key={index}
+									onMouseDown={event => {
+										event.stopPropagation()
+										auth.onSubmitSearch(item)
+									}}
+								>
+									{index === auth.chooseInput ? (
 										<h4 style={{ backgroundColor: 'pink' }}>
-											{item.includes(searchInput) ? (
+											{item.includes(auth.searchInput) ? (
 												<>
-													{item.split(searchInput)[0]}
+													{item.split(auth.searchInput)[0]}
 													<span style={{ color: '#ff0000' }}>
-														{searchInput}
+														{auth.searchInput}
 													</span>
-													{item.split(searchInput)[1]}
+													{item.split(auth.searchInput)[1]}
 												</>
 											) : (
 												item
@@ -81,13 +72,13 @@ function SearchList({
 										</h4>
 									) : (
 										<p>
-											{item.includes(searchInput) ? (
+											{item.includes(auth.searchInput) ? (
 												<>
-													{item.split(searchInput)[0]}
+													{item.split(auth.searchInput)[0]}
 													<span style={{ color: '#ff0000' }}>
-														{searchInput}
+														{auth.searchInput}
 													</span>
-													{item.split(searchInput)[1]}
+													{item.split(auth.searchInput)[1]}
 												</>
 											) : (
 												item
@@ -107,12 +98,19 @@ export default SearchList
 
 const ResultWrapper = styled.div`
 	padding: 5px 10px;
+	margin-top: 1rem;
+	border: 0.2rem solid gray;
+	border-radius: 0.5rem;
 `
 
 const ResultBox = styled.div`
 	:hover {
 		cursor: pointer;
 		background-color: pink;
-		font-size: large;
+		font-size: 13px;
+		font-weight: bold;
 	}
+`
+const SplitLine = styled.hr`
+	margin: 0.5rem 0;
 `

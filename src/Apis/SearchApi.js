@@ -1,9 +1,9 @@
-import { Axios } from ".";
+import { Axios } from '.'
 
 export const SearchApi = {
-  getSearch(search) {
-    return Axios.get("/search", {
-      params: { key: search },
-    });
-  },
-};
+	getSearch(search) {
+		return Axios.get('/search', {
+			params: { key: search },
+		})
+	},
+}

@@ -10,7 +10,7 @@ import {
 } from 'react-icons/fa'
 import styled from 'styled-components'
 import useDebounce from './hooks/useDebounce'
-import Logo from './Logo/YoonGle.png'
+import Logo from './Logo/DongGle.png'
 
 function App() {
 	const [search, setSearch] = useState('')
@@ -80,6 +80,7 @@ function App() {
 		setSearch('')
 	}
 	const onDeleteRecent = target => {
+		// 최근 검색어 삭제기능
 		const deleteRecent = recentSearch.filter(item => item !== target)
 		setRecentSearch(deleteRecent)
 	}
@@ -114,8 +115,10 @@ function App() {
 
 	return (
 		<>
-			<LogoBox href="/">
-				<img src={Logo} />
+			<LogoBox>
+				<a href="/">
+					<img src={Logo} />
+				</a>
 			</LogoBox>
 			<Wrapper>
 				<SearchBox onSubmit={onSearch} onFocus={onFocus}>
@@ -155,11 +158,8 @@ function App() {
 							<>
 								{recentSearch.map((item, index) => {
 									return (
-										<Recent>
-											<div
-												key={index}
-												onClick={() => onClickChangeSearch(item)}
-											>
+										<Recent key={index}>
+											<div onClick={() => onClickChangeSearch(item)}>
 												<FaRegClock
 													style={{
 														position: 'absolute',
@@ -177,6 +177,7 @@ function App() {
 														right: '10px',
 														top: '50%',
 														transform: 'translate(-50%,-50%)',
+														cursor: 'pointer',
 													}}
 													onClick={() => onDeleteRecent(item)}
 												/>
@@ -192,9 +193,8 @@ function App() {
 							<>
 								{relevantSearch.map((item, idx) => {
 									return (
-										<Relvant>
+										<Relvant key={idx}>
 											<div
-												key={idx}
 												onClick={() => onClickChangeSearch(item)}
 												style={{
 													backgroundColor:
@@ -251,10 +251,11 @@ function App() {
 
 export default App
 
-const LogoBox = styled.a`
-	display: flex;
-	justify-content: center;
+const LogoBox = styled.div`
+	margin: 0 auto;
 	margin-top: 100px;
+	text-align: center;
+	width: 600px;
 `
 
 const Wrapper = styled.div`

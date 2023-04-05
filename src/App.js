@@ -104,7 +104,7 @@ function App() {
 
 	return (
 		<>
-			<LogoBox>
+			<LogoBox href="/">
 				<img src={Logo} />
 			</LogoBox>
 			<Wrapper>
@@ -197,7 +197,7 @@ function App() {
 
 export default App
 
-const LogoBox = styled.div`
+const LogoBox = styled.a`
 	display: flex;
 	justify-content: center;
 	margin-top: 100px;

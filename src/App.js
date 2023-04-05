@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { SearchApi } from './Apis/SearchApi'
 import { FaRegClock, FaSearch, FaSearchPlus, FaTimes } from 'react-icons/fa'
 import styled from 'styled-components'
+import useDebounce from './hooks/useDebounce'
 
 function App() {
 	const [search, setSearch] = useState('')
@@ -11,10 +12,12 @@ function App() {
 	const [recentSearch, setRecentSearch] = useState([])
 	const storedData = JSON.parse(localStorage.getItem('recentSearch'))
 
+	const debounceSearch = useDebounce(search) // 디바운싱 커스텀 hook함수화
+
 	const [focusIdx, setFocusIdx] = useState(-1)
-	const getSearchList = async key => {
+	const getSearchList = async () => {
 		try {
-			const { data } = await SearchApi.getSearch(key)
+			const { data } = await SearchApi.getSearch(debounceSearch)
 
 			setRelevantSearch(data.slice(0, 10))
 		} catch (err) {
@@ -23,21 +26,15 @@ function App() {
 	}
 
 	const onFocus = () => {
+		// 검색어 입력창 포커스
 		setFocus(true)
 	}
 	const onBlur = () => {
 		setFocus(false)
 	}
 	useEffect(() => {
-		// 디바운싱 작업
-		const timer = setTimeout(() => {
-			getSearchList(search)
-		}, 300)
-
-		return () => {
-			clearTimeout(timer)
-		}
-	}, [search])
+		getSearchList()
+	}, [debounceSearch])
 
 	useEffect(() => {
 		if (storedData) {
@@ -70,6 +67,7 @@ function App() {
 	}
 
 	const onDeleteSearch = () => {
+		// 검색어 입력 도중 X버튼 클릭시 검색어 초기화
 		setSearch('')
 	}
 	const onClickChangeSearch = value => {

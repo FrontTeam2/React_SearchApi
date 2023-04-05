@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
 
 import { SearchApi } from './Apis/SearchApi'
-import { FaRegClock, FaSearch, FaSearchPlus, FaTimes } from 'react-icons/fa'
+import {
+	FaRegClock,
+	FaSearch,
+	FaSearchMinus,
+	FaSearchPlus,
+	FaTimes,
+} from 'react-icons/fa'
 import styled from 'styled-components'
 import useDebounce from './hooks/useDebounce'
 import Logo from './Logo/YoonGle.png'
@@ -73,6 +79,10 @@ function App() {
 		// 검색어 입력 도중 X버튼 클릭시 검색어 초기화
 		setSearch('')
 	}
+	const onDeleteRecent = target => {
+		const deleteRecent = recentSearch.filter(item => item !== target)
+		setRecentSearch(deleteRecent)
+	}
 	const onClickChangeSearch = value => {
 		// 마우스로 연관 검색어 및 최근 검색어 클릭시 해당 키워드로 변경
 		setSearch(value)
@@ -142,51 +152,95 @@ function App() {
 					</InputBox>
 					<RecentBox>
 						{focus && recentSearch.length > 0 && (
-							<Recent>
-								{recentSearch.map((item, index) => (
-									<li key={index} onClick={() => onClickChangeSearch(item)}>
-										<FaRegClock />
-										{item}
-									</li>
-								))}
-							</Recent>
+							<>
+								{recentSearch.map((item, index) => {
+									return (
+										<Recent>
+											<div
+												key={index}
+												onClick={() => onClickChangeSearch(item)}
+											>
+												<FaRegClock
+													style={{
+														position: 'absolute',
+														top: '50%',
+														left: '20px',
+														transform: 'translate(-50%,-50%)',
+													}}
+												/>
+												{item}
+											</div>
+											<div>
+												<FaSearchMinus
+													style={{
+														position: 'absolute',
+														right: '10px',
+														top: '50%',
+														transform: 'translate(-50%,-50%)',
+													}}
+													onClick={() => onDeleteRecent(item)}
+												/>
+											</div>
+										</Recent>
+									)
+								})}
+							</>
 						)}
 					</RecentBox>
 					<RelevantBox>
 						{focus && relevantSearch.length > 0 && (
-							<Relvant>
+							<>
 								{relevantSearch.map((item, idx) => {
 									return (
-										<li
-											key={idx}
-											onClick={() => onClickChangeSearch(item)}
-											style={{
-												backgroundColor: focusIdx === idx && 'rgb(220,220,200)',
-											}}
-										>
-											{item === '검색어를 입력해주세요.' ||
-											search === '' ? null : item ===
-											  '검색 결과가 없습니다.' ? (
-												<>{item}</>
-											) : item.includes(search) ? (
-												<>
-													<FaSearchPlus />
-													<p>
-														{item.split(search)[0]}
-														<span style={{ fontWeight: 'bold' }}>{search}</span>
-														{item.split(search)[1]}
-													</p>
-												</>
-											) : (
-												<>
-													<FaSearchPlus />
-													{item}
-												</>
-											)}
-										</li>
+										<Relvant>
+											<div
+												key={idx}
+												onClick={() => onClickChangeSearch(item)}
+												style={{
+													backgroundColor:
+														focusIdx === idx && 'rgb(255,255,255)',
+												}}
+											>
+												{item === '검색어를 입력해주세요.' ||
+												search === '' ? null : item ===
+												  '검색 결과가 없습니다.' ? (
+													<>{item}</>
+												) : item.includes(search) ? (
+													<>
+														<FaSearchPlus
+															style={{
+																position: 'absolute',
+																top: '50%',
+																left: '20px',
+																transform: 'translate(-50%,-50%)',
+															}}
+														/>
+														<div>
+															{item.split(search)[0]}
+															<span style={{ fontWeight: 'bold' }}>
+																{search}
+															</span>
+															{item.split(search)[1]}
+														</div>
+													</>
+												) : (
+													<>
+														<FaSearchPlus
+															style={{
+																position: 'absolute',
+																top: '50%',
+																left: '20px',
+																transform: 'translate(-50%,-50%)',
+															}}
+														/>
+														{item}
+													</>
+												)}
+											</div>
+										</Relvant>
 									)
 								})}
-							</Relvant>
+							</>
 						)}
 					</RelevantBox>
 				</SearchBox>
@@ -253,46 +307,28 @@ const SearchButton = styled.button`
 const RelevantBox = styled.div`
 	width: 100%;
 `
-const Relvant = styled.ul`
-	margin: 0 20px;
-	align-items: flex-start;
-	padding: 0;
-
-	& > li {
-		list-style: none;
-		align-items: center;
-		font-size: 16px;
-		cursor: pointer;
-		display: flex;
-		gap: 10px;
-		> p {
-			margin: 0;
-		}
-
-		:hover {
-			background-color: rgb(220, 220, 200);
-		}
+const Relvant = styled.div`
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 0px 40px;
+	:hover {
+		background-color: #fff;
+	}
 	}
 `
 
 const RecentBox = styled.div`
 	width: 100%;
 `
-const Recent = styled.ul`
-	margin: 20px 20px;
-	align-items: flex-start;
-	padding: 0;
-
-	& > li {
-		list-style: none;
-		display: flex;
-		gap: 10px;
-		align-items: center;
-		font-size: 16px;
-		cursor: pointer;
-
-		:hover {
-			background-color: rgb(220, 220, 200);
-		}
+const Recent = styled.div`
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 0px 40px;
+	:hover {
+		background-color: #fff;
 	}
 `

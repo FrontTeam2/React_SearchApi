@@ -1,4 +1,4 @@
-import { Axios } from './index'
+import { Axios } from './@core'
 
 const PATH = 'search'
 

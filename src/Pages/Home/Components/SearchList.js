@@ -1,4 +1,4 @@
-import { useAuth } from 'Contexts/auth'
+import { useAuth } from 'Contexts/searchAuth'
 import styled from 'styled-components'
 
 function SearchList() {
@@ -59,13 +59,13 @@ function SearchList() {
 									{index === auth.chooseInput ? (
 										<h4 style={{ backgroundColor: 'pink' }}>
 											{item.includes(auth.searchInput) ? (
-												<>
+												<p>
 													{item.split(auth.searchInput)[0]}
 													<span style={{ color: '#ff0000' }}>
 														{auth.searchInput}
 													</span>
 													{item.split(auth.searchInput)[1]}
-												</>
+												</p>
 											) : (
 												item
 											)}
@@ -101,14 +101,25 @@ const ResultWrapper = styled.div`
 	margin-top: 1rem;
 	border: 0.2rem solid gray;
 	border-radius: 0.5rem;
+	box-sizing: border-box;
 `
 
 const ResultBox = styled.div`
+	box-sizing: border-box;
 	:hover {
 		cursor: pointer;
-		background-color: pink;
-		font-size: 13px;
+		background-color: var(--color--ultralight-gray);
 		font-weight: bold;
+		box-sizing: border-box;
+	}
+
+	& > h3,
+	& > p {
+		font-size: ${({ theme }) => theme.FONT_SIZE.small};
+	}
+
+	& p span {
+		font-size: ${({ theme }) => theme.FONT_SIZE.small};
 	}
 `
 const SplitLine = styled.hr`

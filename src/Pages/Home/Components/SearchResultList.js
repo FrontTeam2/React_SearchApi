@@ -1,4 +1,4 @@
-import { useAuth } from 'Contexts/auth'
+import { useAuth } from 'Contexts/searchAuth'
 import styled from 'styled-components'
 
 function SearchResultList() {

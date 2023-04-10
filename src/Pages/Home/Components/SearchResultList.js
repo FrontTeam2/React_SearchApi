@@ -1,19 +1,19 @@
-import { useAuth } from 'Contexts/searchAuth'
+import { useSearch } from 'Contexts/searchContext'
 import styled from 'styled-components'
 
 function SearchResultList() {
-	const auth = useAuth()
+	const search = useSearch()
 
-	if (auth.searchResultList === '검색 결과가 없습니다.') {
+	if (search.searchResultList === '검색 결과가 없습니다.') {
 		return
 	}
 
 	return (
 		<ResultList>
-			{auth.searchResultList.length ? (
+			{search.searchResultList.length ? (
 				<>
 					<h1>검색해서 나온 리스트</h1>
-					{auth.searchResultList.map((result, index) => (
+					{search.searchResultList.map((result, index) => (
 						<p key={index}>{result}</p>
 					))}
 				</>

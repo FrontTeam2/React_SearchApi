@@ -1,46 +1,24 @@
 import getData from 'Apis/searchApi'
-import { useEffect } from 'react'
-import { useContext } from 'react'
+import { useContext, createContext } from 'react'
 import { useState } from 'react'
 import TokenService from 'Repositorys/tokenService'
 
-const { createContext } = require('react')
-
-const AuthContext = createContext()
+const SearchContext = createContext()
 
 /**  
-어디서든 useAuth를 사용하면 AuthContext를 사용할 수 있음
+어디서든 useSearch를 사용하면 SearchContext를 사용할 수 있음
 */
-export const useAuth = () => useContext(AuthContext)
+export const useSearch = () => useContext(SearchContext)
 
-function AuthProvider({ children }) {
+function SearchProvider({ children }) {
 	const maxSearchList = 5 // 최대 저장할 최근 검색어 갯수
 
-	const [searchToken, setSearchToken] = useState() // 토큰 관리
 	const [searchInput, setSearchInput] = useState('') // 검색창에 있는 value 관리
 	const [searchList, setSearchList] = useState([]) // 연관검색어 list관리
 	const [searchResultList, setSearchResultList] = useState([]) // 검색결과 list관리
 	const [chooseInput, setChooseInput] = useState(-1) // 검색창에서 하이라이트의 대상이 될 인덱스번호를 기억할 state
 	const [focusText, setFocusText] = useState('') // Focus된 텍스트
 	const [showSearchList, setShowSearchList] = useState(false) // 검색창 활성화 관리
-
-	useEffect(() => {
-		// 만약에 웹 스토리지에 token이 남아 있다면
-		const token = TokenService.getSearchTokens()
-		if (token) {
-			setSearchToken([token])
-		}
-	}, [])
-
-	/**
-	 * 검색 : 토큰 생성
-	 */
-	const search = token => {
-		if (searchToken) {
-			return TokenService.setToken(token)
-		}
-		TokenService.setToken(token)
-	}
 
 	/**
 	 * 토큰 값 얻기
@@ -64,16 +42,14 @@ function AuthProvider({ children }) {
 			.catch(error => {
 				console.log(error)
 			})
-		search(value)
+		TokenService.setToken(value)
 		setSearchInput(value)
 		setShowSearchList(false)
 	}
 
 	return (
-		<AuthContext.Provider
+		<SearchContext.Provider
 			value={{
-				searchToken,
-				search,
 				get,
 				searchInput,
 				setSearchInput,
@@ -91,7 +67,7 @@ function AuthProvider({ children }) {
 			}}
 		>
 			{children}
-		</AuthContext.Provider>
+		</SearchContext.Provider>
 	)
 }
-export default AuthProvider
+export default SearchProvider

@@ -1,96 +1,74 @@
-import { useAuth } from 'Contexts/searchAuth'
-import styled from 'styled-components'
+import { useSearch } from 'Contexts/searchContext'
+import styled, { css } from 'styled-components'
 
 function SearchList() {
-	const auth = useAuth()
+	const search = useSearch()
 
-	if (auth.searchList === '검색 결과가 없습니다.') {
-		return <p>{auth.searchList}</p>
+	// searchList의 값이 '검색 결과가 없습니다.'일 때
+	if (search.searchList === '검색 결과가 없습니다.') {
+		return <p>{search.searchList}</p>
 	}
 
-	if (!auth.showSearchList) {
+	// showSearchList가 false일때
+	if (!search.showSearchList) {
 		return
 	}
 
-	return (
-		<ResultWrapper>
-			{auth.searchInput == '' ? (
-				<>
+	// 최근 검색어 보이기
+	if (search.searchInput == '') {
+		return (
+				<ResultWrapper>
 					<div>
 						<h4>최근 검색어</h4>
 					</div>
 					<SplitLine />
-					{auth.get() ? (
-						<>
-							{auth.get().map((item, index) => (
-								<ResultBox
-									key={item}
-									onMouseDown={event => {
-										event.stopPropagation()
-										auth.onSubmitSearch(item)
-									}}
-								>
-									{index === auth.chooseInput ? (
-										<h3 style={{ backgroundColor: 'pink' }}>{item}</h3>
-									) : (
-										<p>{item}</p>
-									)}
-								</ResultBox>
-							))}
-						</>
+					{/* 최근검색어 토큰이 있다면*/}
+					{search.get() ? (
+						search.get().map((item, index) => (
+							<ResultBox
+								key={item}
+								onMouseDown={e => {
+									e.stopPropagation()
+									search.onSubmitSearch(item)
+								}}
+							>
+								{index === search.chooseInput ? (
+									<h3 style={{ backgroundColor: 'pink' }}>{item}</h3>
+								) : (
+									<p>{item}</p>
+								)}
+							</ResultBox>
+						))
 					) : (
-						<>
-							<p>최근 검색어가 없습니다.</p>
-						</>
+						// 최근 검색어 토큰이 없다면
+						<p>최근 검색어가 없습니다.</p>
 					)}
-				</>
-			) : (
-				<>
-					{auth.showSearchList && (
-						<>
-							{auth.searchList.map((item, index) => (
-								<ResultBox
-									key={index}
-									onMouseDown={event => {
-										event.stopPropagation()
-										auth.onSubmitSearch(item)
-									}}
-								>
-									{index === auth.chooseInput ? (
-										<h4 style={{ backgroundColor: 'pink' }}>
-											{item.includes(auth.searchInput) ? (
-												<p>
-													{item.split(auth.searchInput)[0]}
-													<span style={{ color: '#ff0000' }}>
-														{auth.searchInput}
-													</span>
-													{item.split(auth.searchInput)[1]}
-												</p>
-											) : (
-												item
-											)}
-										</h4>
-									) : (
-										<p>
-											{item.includes(auth.searchInput) ? (
-												<>
-													{item.split(auth.searchInput)[0]}
-													<span style={{ color: '#ff0000' }}>
-														{auth.searchInput}
-													</span>
-													{item.split(auth.searchInput)[1]}
-												</>
-											) : (
-												item
-											)}
-										</p>
-									)}
-								</ResultBox>
-							))}
-						</>
+				</ResultWrapper>
+		)
+	}
+
+	// 연관 검색어 보이기
+	return (
+		<ResultWrapper>
+			{search.searchList.map((item, index) => (
+				<ResultBox
+					key={index}
+					isSelected={index === search.chooseInput}
+					onMouseDown={e => {
+						e.stopPropagation()
+						search.onSubmitSearch(item)
+					}}
+				>
+					{item.includes(search.searchInput) ? (
+						<p>
+							{item.split(search.searchInput)[0]}
+							<span style={{ color: '#ff0000' }}>{search.searchInput}</span>
+						</p>
+					) : (
+						<p>{item}</p>
 					)}
-				</>
-			)}
+				</ResultBox>
+			))}
 		</ResultWrapper>
 	)
 }
@@ -121,7 +99,14 @@ const ResultBox = styled.div`
 	& p span {
 		font-size: ${({ theme }) => theme.FONT_SIZE.small};
 	}
+
+	${({ isSelected }) =>
+		isSelected &&
+		css`
+			background-color: pink;
+		`}
 `
+
 const SplitLine = styled.hr`
 	margin: 0.5rem 0;
 `

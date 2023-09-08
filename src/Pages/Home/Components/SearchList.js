@@ -63,6 +63,7 @@ function SearchList() {
 						<p>
 							{item.split(search.searchInput)[0]}
 							<span style={{ color: '#ff0000' }}>{search.searchInput}</span>
+							{item.split(search.searchInput)[1]}
 						</p>
 					) : (
 						<p>{item}</p>

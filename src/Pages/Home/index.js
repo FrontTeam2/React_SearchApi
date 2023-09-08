@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { FlexAlignCSS, MarginAuto } from 'Styles/common'
 import HomePage from './Components/Search'
 
-const title = 'Google'
+const title = 'Joogle'
 
 function Home() {
 	return (

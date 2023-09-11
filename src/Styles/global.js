@@ -72,7 +72,7 @@ const GlobalStyles = createGlobalStyle`
     --color: white;
     --color--black: #191919;
     --color-white: #ffffff;
-    --color--ultralight-gray: #f7f7f7;
+    --color--ultralight-gray: #ededed;
     --color-light-gray: #ddd;
     --color-normal-gray: #333333;
     --color-red: #990101;

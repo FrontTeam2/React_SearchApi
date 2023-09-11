@@ -25,7 +25,7 @@ const HomeSection = styled.section`
     margin-top: 32rem;
 	flex-direction: column;
 	justify-content: center;
-	height: auto;
+	height: 100%;
 
 	& > h2 {
 		margin-bottom: 2rem;

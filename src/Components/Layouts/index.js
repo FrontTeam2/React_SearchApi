@@ -17,8 +17,9 @@ export default Layout
 const Wrapper = styled.div`
 	${FlexAlignCSS}
 	flex-direction:column;
-	height: 100vh;
 	justify-content: space-between;
+	height: 100%;
+	min-height: 100vh;
 `
 const S = {
 	Wrapper,
